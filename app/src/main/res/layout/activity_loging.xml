@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/bgbg"
+    android:layout_height="match_parent"
+    tools:context="com.xiaojun.yiliaoxitong.ui.LogingActivity">
+
+    <LinearLayout
+        android:orientation="horizontal"
+       android:layout_margin="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_weight="1.6"
+            android:background="@drawable/bg_2"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@drawable/logo2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_width="0dp"
+            android:background="@color/write"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@drawable/logo3"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <LinearLayout
+                    android:layout_above="@+id/v1"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="手机号:"
+                        android:textSize="18sp"
+                        android:layout_marginLeft="50dp"
+                        android:textColor="@color/blake"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <EditText
+                        android:background="@null"
+                        android:textSize="18sp"
+                        android:paddingLeft="10dp"
+                        android:inputType="number"
+                        android:maxLength="11"
+                        android:textColor="@color/blake"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            <View
+                android:id="@+id/v1"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/lanse"
+                android:layout_marginBottom="1dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <LinearLayout
+                    android:layout_above="@+id/v2"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="密码:"
+                        android:textSize="18sp"
+                        android:layout_marginLeft="50dp"
+                        android:textColor="@color/blake"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <EditText
+                        android:background="@null"
+                        android:textSize="18sp"
+                        android:paddingLeft="10dp"
+                        android:inputType="textPassword"
+                        android:textColor="@color/blake"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/v2"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/lanse"
+                    android:layout_marginBottom="1dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <LinearLayout
+                    android:layout_above="@+id/v3"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="用户类型:"
+                        android:textSize="18sp"
+                        android:layout_marginLeft="50dp"
+                        android:textColor="@color/blake"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <EditText
+                        android:background="@null"
+                        android:textSize="16sp"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/blake"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/v3"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/lanse"
+                    android:layout_marginBottom="1dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:orientation="vertical"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <LinearLayout
+                    android:layout_above="@+id/v4"
+                    android:layout_marginBottom="6dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="主治医生:"
+                        android:textSize="18sp"
+                        android:layout_marginLeft="50dp"
+                        android:textColor="@color/blake"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <EditText
+                        android:background="@null"
+                        android:textSize="16sp"
+                        android:paddingLeft="10dp"
+                        android:textColor="@color/blake"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/v4"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/lanse"
+                    android:layout_marginBottom="1dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+            </RelativeLayout>
+
+
+            <Button
+                android:text="登 录"
+                android:background="@drawable/jiaohu3"
+                android:textSize="18sp"
+                android:textColor="@color/write"
+                android:layout_width="120dp"
+                android:layout_height="52dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
