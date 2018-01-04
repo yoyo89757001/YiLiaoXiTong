@@ -45,6 +45,7 @@
                 android:orientation="vertical"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
 
@@ -233,14 +234,15 @@
                 android:text="登 录"
                 android:background="@drawable/jiaohu3"
                 android:textSize="18sp"
+                android:id="@+id/denglu"
+                android:layout_marginTop="50dp"
                 android:textColor="@color/write"
-                android:layout_width="120dp"
+                android:layout_width="130dp"
                 android:layout_height="52dp" />
 
         </LinearLayout>
 
     </LinearLayout>
-
 
 
 </RelativeLayout>

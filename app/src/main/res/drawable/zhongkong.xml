@@ -35,8 +35,8 @@
             android:bottomLeftRadius   整型 左下角半径
             android:bottomRightRadius  整型 右下角半径
      -->
-    <!--<corners-->
-        <!--android:radius="8dp"-->
+    <corners
+        android:radius="8dp"/>
         <!--android:topLeftRadius="5dp"-->
         <!--android:topRightRadius="15dp"-->
         <!--android:bottomLeftRadius="20dp"-->

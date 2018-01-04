@@ -3,14 +3,18 @@ package com.xiaojun.yiliaoxitong.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+
 import com.xiaojun.yiliaoxitong.R;
 
 public class LogingActivity extends Activity {
@@ -46,8 +50,16 @@ public class LogingActivity extends Activity {
         wmParams.width=dw;
         wmParams.height=dh;
 
-      //  TextView ee= (TextView) view.findViewById(R.id.ddddd);
-
+        Button denglu= (Button) view.findViewById(R.id.denglu);
+        denglu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("LogingActivity", "dddd");
+                startActivity(new Intent(LogingActivity.this,MainActivity.class));
+                wm.removeView(view);
+                finish();
+            }
+        });
 
 
         wm.addView(view, wmParams);
