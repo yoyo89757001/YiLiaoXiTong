@@ -2,10 +2,12 @@ package com.xiaojun.yiliaoxitong.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.xiaojun.yiliaoxitong.R;
 import java.util.List;
@@ -41,6 +43,12 @@ public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.View
         //判断是否显示字母标题
 
         viewHolder.mingcheng.setText(datas.get(position));
+        if (position%2==1){
+            viewHolder.top_bg.setBackgroundResource(R.color.huise2);
+        }else {
+            viewHolder.top_bg.setBackgroundResource(R.color.write);
+        }
+
 
 
     }
@@ -52,6 +60,7 @@ public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.View
     //自定义的ViewHolder，持有每个Item的的所有界面元素
       class ViewHolder extends RecyclerView.ViewHolder {
       private   TextView bianhao,mingcheng,shijian,caozuo;
+      private LinearLayout top_bg;
 
 
         private ViewHolder(View view){
@@ -60,6 +69,7 @@ public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.View
             mingcheng= (TextView) view.findViewById(R.id.mingcheng);
             shijian= (TextView) view.findViewById(R.id.shijian);
             caozuo= (TextView) view.findViewById(R.id.caozuo);
+            top_bg= (LinearLayout) view.findViewById(R.id.top_bg);
 
 
         }

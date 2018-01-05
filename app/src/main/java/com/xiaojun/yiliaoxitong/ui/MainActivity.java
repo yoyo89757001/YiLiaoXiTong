@@ -15,12 +15,14 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -155,6 +157,22 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         dataList.add("ddd");
         dataList.add("sss");
+        dataList.add("ddd");
+        dataList.add("sss");
+        dataList.add("ddd");
+        dataList.add("sss");
+        dataList.add("ddd");
+        dataList.add("sss");
+        dataList.add("ddd");
+        dataList.add("sss");
+        dataList.add("ddd");
+        dataList.add("sss");
+        stringList.add("1");
+        stringList.add("2");
+        stringList.add("3");
+        stringList.add("4");
+        stringList.add("5");
+
 
         linearLayoutManager = new WrapContentLinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,false);
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerview);
@@ -172,7 +190,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //设置底部加载文字提示
         lRecyclerView.setFooterViewHint("拼命加载中","--------我是有底线的--------","网络不给力...");
         lRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-
+        lRecyclerView.setPullRefreshEnabled(false);
         lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -233,23 +251,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.xiongdijiemei:
                 View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
-                popupWindow=new PopupWindow(contentView,400, 560);
                 ListView listView= (ListView) contentView.findViewById(R.id.dddddd);
                 adapterss=new PopupWindowAdapter(MainActivity.this,stringList);
+                listView.setAdapter(adapterss);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                        xiongdijiemei.setText(stringList.get(position));
                         popupWindow.dismiss();
                     }
                 });
-                listView.setAdapter(adapterss);
 
+                popupWindow=new PopupWindow(contentView,180, setListViewHeightBasedOnChildren(listView));
                 popupWindow.setFocusable(true);//获取焦点
                 popupWindow.setOutsideTouchable(true);//获取外部触摸事件
                 popupWindow.setTouchable(true);//能够响应触摸事件
                 popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
-                popupWindow.showAsDropDown(xiongdijiemei,xiongdijiemei.getRight(),0);
+                popupWindow.showAsDropDown(xiongdijiemei,0,0);
                 break;
             case R.id.beishixuexing:
 
@@ -314,5 +332,27 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
+    public  int setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return 0;
+        }
 
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            // listItem.measure(0, 0);
+            listItem.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+//        ViewGroup.LayoutParams params = listView.getLayoutParams();
+//        params.height = totalHeight
+//                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+//        listView.setLayoutParams(params);
+        return totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+    }
 }
