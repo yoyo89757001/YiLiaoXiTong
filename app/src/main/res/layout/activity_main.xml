@@ -311,7 +311,6 @@
                 <LinearLayout
                     android:layout_weight="8"
                     android:orientation="vertical"
-                    android:background="@color/huise"
                     android:layout_width="match_parent"
                     android:layout_height="0dp">
 
@@ -320,6 +319,7 @@
                         android:layout_height="wrap_content">
                         <LinearLayout
                             android:orientation="vertical"
+                            android:background="@color/huise"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <TextView
@@ -1001,6 +1001,7 @@
                                 android:text="保 存"
                                 android:textColor="@color/write"
                                 android:textSize="20sp"
+                                android:id="@+id/baocun2"
                                 android:layout_marginBottom="30dp"
                                 android:background="@drawable/jiaohu3"
                                 android:layout_marginTop="30dp"
@@ -1125,8 +1126,166 @@
                         android:layout_height="0dp"/>
 
                 </LinearLayout>
+            <!-- ==============第二个结束 ==============-->
+            <LinearLayout
+                android:id="@+id/ll3"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
+                <RelativeLayout
+                    android:background="@color/write"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
 
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="22sp"
+                        android:layout_marginLeft="20dp"
+                        android:text="医生展示"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <EditText
+                        android:textSize="18sp"
+                        android:textColor="@color/blake"
+                        android:hint="输入医生姓名"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:background="@drawable/zhongkong"
+                        android:layout_toLeftOf="@+id/chaxun_yisheng"
+                        android:layout_marginRight="20dp"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:textColorHint="@color/hintcoloe"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content" />
+
+                    <Button
+                        android:id="@+id/chaxun_yisheng"
+                        android:background="@drawable/jiaohu3"
+                        android:text="查询"
+                        android:layout_marginRight="20dp"
+                        android:textSize="16sp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="60dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+                <LinearLayout
+                    android:background="#C5E6F5"
+                    android:layout_weight="0.6"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="20sp"
+                        android:text="头像"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content" />
+                    <View
+                        android:layout_width="1dp"
+                        android:background="@color/huise"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="20sp"
+                        android:text="姓名"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content" />
+                    <View
+                        android:layout_width="1dp"
+                        android:background="@color/huise"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="20sp"
+                        android:text="执业医院"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="wrap_content" />
+                    <View
+                        android:layout_width="1dp"
+                        android:background="@color/huise"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="20sp"
+                        android:text="科室"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.6"
+                        android:layout_height="wrap_content" />
+                    <View
+                        android:layout_width="1dp"
+                        android:background="@color/huise"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="20sp"
+                        android:text="职称"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.6"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:background="@color/huise"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="20sp"
+                        android:text="门诊地点"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.6"
+                        android:layout_height="wrap_content" />
+                    <View
+                        android:layout_width="1dp"
+                        android:background="@color/huise"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="20sp"
+                        android:text="临床擅长"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.6"
+                        android:layout_height="wrap_content" />
+                    <View
+                        android:layout_width="1dp"
+                        android:background="@color/huise"
+                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:textColor="@color/blake"
+                        android:textSize="20sp"
+                        android:text="操作"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.8"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <com.github.jdsjlzx.recyclerview.LRecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_weight="8"
+                    android:id="@+id/recyclerview_ys"
+                    android:layout_height="0dp"/>
+
+            </LinearLayout>
 
 
 

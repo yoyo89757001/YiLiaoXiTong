@@ -19,8 +19,11 @@ import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,6 +59,12 @@ public class Utils {
         Point size = new Point();
         display.getSize(size);
         return size;
+    }
+
+    public static void showToast(Context context,String ss,int ii){
+        Toast tastyToast= TastyToast.makeText(context,ss,TastyToast.LENGTH_LONG,ii);
+        tastyToast.setGravity(Gravity.CENTER,0,0);
+        tastyToast.show();
     }
 
     public static void makeDir(String dirPath) {

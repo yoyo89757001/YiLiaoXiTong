@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/top_bg"
+    android:gravity="center_vertical"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
@@ -11,8 +12,8 @@
         android:layout_weight="1"
         android:textSize="16sp"
         android:text="编号"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="18dp"
         android:gravity="center"
         android:textColor="@color/blake"
         android:layout_height="wrap_content" />

@@ -10,12 +10,10 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -26,22 +24,41 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
-import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.github.jdsjlzx.recyclerview.ProgressStyle;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.xiaojun.yiliaoxitong.MyApplication;
 import com.xiaojun.yiliaoxitong.R;
 import com.xiaojun.yiliaoxitong.adapters.LiangBiaoAdapter;
 import com.xiaojun.yiliaoxitong.adapters.PopupWindowAdapter;
+import com.xiaojun.yiliaoxitong.adapters.YiShengAdapter;
+import com.xiaojun.yiliaoxitong.beans.DengLuBean;
+import com.xiaojun.yiliaoxitong.beans.DengLuBeanDao;
+import com.xiaojun.yiliaoxitong.beans.GeRenXinXi;
+import com.xiaojun.yiliaoxitong.beans.TokensBean;
 import com.xiaojun.yiliaoxitong.utils.DateUtils;
+import com.xiaojun.yiliaoxitong.utils.GsonUtil;
 import com.xiaojun.yiliaoxitong.views.WrapContentLinearLayoutManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -51,25 +68,33 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private View view = null;
     private TextView t1, t2, t3, t4, t5, t6;
     private ImageView im1, im2, im3, im4, im5, im6;
-    private LinearLayout l1, l2, l3, l4, l5, l6,ll1,ll2;
+    private LinearLayout l1, l2, l3, l4, l5, l6,ll1,ll2,ll3;
     private EditText xingming,xingbie,mingzu,chushengriqi,zhiye,zhuceyouxiang,wenhuachengdu,paihang,hunyingzhuangkuang;
     private TextView xiongdijiemei,beishixuexing,beishiliexing,beishilaiyuan,fabingnianling,zongjiaoxingyang,fenchuangnianling,fuqingxueli,muqingxueli,yangyuzhe;
     private Button baocun;
     private PopupWindow popupWindow=null;
     private List<String> stringList=new ArrayList<>();
     private PopupWindowAdapter adapterss;
-    private WrapContentLinearLayoutManager linearLayoutManager = null;
-    private LRecyclerView lRecyclerView;
+    private LRecyclerView lRecyclerView,lRecyclerView_ys;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
-    private List<String> dataList = new ArrayList<>();;
+    private LRecyclerViewAdapter lRecyclerViewAdapter_ys;
+    private List<String> dataList = new ArrayList<>();
+    private List<String> dataList_ys = new ArrayList<>();
     private LiangBiaoAdapter taiZhangAdapter;
-
+    private YiShengAdapter yiShengAdapter;
+    private DengLuBeanDao dengLuBeanDao=null;
+    private DengLuBean dengLuBean=null;
+    private long id=-2;
+    private String case_number=null;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dengLuBeanDao=MyApplication.getAppContext().getDaoSession().getDengLuBeanDao();
+        dengLuBean=dengLuBeanDao.load(123456L);
+
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         dw = dm.widthPixels;
@@ -117,6 +142,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         l6.setOnClickListener(this);
         ll1= (LinearLayout) view.findViewById(R.id.ll1);
         ll2= (LinearLayout) view.findViewById(R.id.ll2);
+        ll3= (LinearLayout) view.findViewById(R.id.ll3);
         im1 = (ImageView) view.findViewById(R.id.im1);
         im2 = (ImageView) view.findViewById(R.id.im2);
         im3 = (ImageView) view.findViewById(R.id.im3);
@@ -154,6 +180,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         muqingxueli.setOnClickListener(this);
         yangyuzhe= (TextView) view.findViewById(R.id.yangyuzhexueli);
         yangyuzhe.setOnClickListener(this);
+        baocun= (Button) view.findViewById(R.id.baocun2);
+        baocun.setOnClickListener(this);
 
         dataList.add("ddd");
         dataList.add("sss");
@@ -172,17 +200,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
         stringList.add("3");
         stringList.add("4");
         stringList.add("5");
+        dataList_ys.add("ddd");
+        dataList_ys.add("sss");
+        dataList_ys.add("ddd");
+        dataList_ys.add("sss");
+        dataList_ys.add("ddd");
 
 
-        linearLayoutManager = new WrapContentLinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,false);
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerview);
+        lRecyclerView_ys = (LRecyclerView) view.findViewById(R.id.recyclerview_ys);
+
         taiZhangAdapter = new LiangBiaoAdapter(dataList,MainActivity.this);
         lRecyclerViewAdapter = new LRecyclerViewAdapter(taiZhangAdapter);
-
-        lRecyclerView.setLayoutManager(linearLayoutManager);
-
+        lRecyclerView.setLayoutManager(new WrapContentLinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,false));
         lRecyclerView.setAdapter(lRecyclerViewAdapter);
-
         //设置头部加载颜色
         lRecyclerView.setHeaderViewColor(R.color.colorAccent, R.color.blake ,android.R.color.white);
         lRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
@@ -198,11 +229,32 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
             }
         });
+        //医生的
+        yiShengAdapter = new YiShengAdapter(dataList_ys,MainActivity.this);
+        lRecyclerViewAdapter_ys = new LRecyclerViewAdapter(yiShengAdapter);
+        lRecyclerView_ys.setLayoutManager(new WrapContentLinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL,false));
+        lRecyclerView_ys.setAdapter(lRecyclerViewAdapter_ys);
+        //设置头部加载颜色
+        lRecyclerView_ys.setHeaderViewColor(R.color.colorAccent, R.color.blake ,android.R.color.white);
+        lRecyclerView_ys.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
+        lRecyclerView_ys.setFooterViewColor(R.color.textcolor, R.color.blake ,android.R.color.white);
+        //设置底部加载文字提示
+        lRecyclerView_ys.setFooterViewHint("拼命加载中","--------我是有底线的--------","网络不给力...");
+        lRecyclerView_ys.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        lRecyclerView_ys.setPullRefreshEnabled(false);
+        lRecyclerViewAdapter_ys.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+
+            }
+        });
+
 
 
         wm.addView(view, wmParams);
 
-
+        link_info();
     }
 
 
@@ -214,6 +266,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 l1.setBackgroundResource(R.color.write);
                 im1.setBackgroundResource(R.drawable.lanjiantou);
                 t1.setTextColor(Color.parseColor("#008AFF"));
+                baocun.setText("保 存");
                 setViewGoen();
                 ll1.setVisibility(View.VISIBLE);
                 break;
@@ -230,6 +283,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 l3.setBackgroundResource(R.color.write);
                 im3.setBackgroundResource(R.drawable.lanjiantou);
                 t3.setTextColor(Color.parseColor("#008AFF"));
+                setViewGoen();
+                ll3.setVisibility(View.VISIBLE);
                 break;
             case R.id.l4:
                 chongzhi();
@@ -248,6 +303,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 l6.setBackgroundResource(R.color.write);
                 im6.setBackgroundResource(R.drawable.lanjiantou);
                 t6.setTextColor(Color.parseColor("#008AFF"));
+                break;
+            case R.id.baocun2:
+
+                link_xiugai_info();
+
                 break;
             case R.id.xiongdijiemei:
                 View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
@@ -306,7 +366,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void setViewGoen(){
         ll1.setVisibility(View.GONE);
         ll2.setVisibility(View.GONE);
-
+        ll3.setVisibility(View.GONE);
     }
 
     private void chongzhi() {
@@ -355,4 +415,208 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //        listView.setLayoutParams(params);
         return totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
     }
+
+
+    private void link_info() {
+        // showDialog();
+        final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
+
+//    /* form的分割线,自己定义 */
+//        String boundary = "xx--------------------------------------------------------------xx";
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("cmd","100");
+//            jsonObject.put("account",zhanghao);
+//            jsonObject.put("password",jiami);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        RequestBody body = new FormBody.Builder()
+//                .add("grant_type","password")
+//                .add("username","13488888888")
+//                .add("password","123")
+//                .build();
+
+        Request.Builder requestBuilder = new Request.Builder()
+               // .post(body)
+                .addHeader("Authorization","Bearer "+dengLuBean.getToken())
+                .get()
+                .url(dengLuBean.getZhuji() + "/api/memberships/info");
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败"+e.getMessage());
+                //dismissDialog();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                //   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss);
+
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    final GeRenXinXi zhaoPianBean = gson.fromJson(jsonObject, GeRenXinXi.class);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            xingming.setText(zhaoPianBean.getData().getReal_name());
+                            xingbie.setText(zhaoPianBean.getData().getGender());
+                            mingzu.setText(zhaoPianBean.getData().getNation());
+                            chushengriqi.setText(zhaoPianBean.getData().getBirthday().substring(0,10));
+                            zhiye.setText(zhaoPianBean.getData().getVocation());
+                            zhuceyouxiang.setText(zhaoPianBean.getData().getEmail());
+                            wenhuachengdu.setText(zhaoPianBean.getData().getEducation());
+                            xiongdijiemei.setText(zhaoPianBean.getData().getSiblings()+"");
+                            paihang.setText(zhaoPianBean.getData().getRaking()+"");
+                            hunyingzhuangkuang.setText(zhaoPianBean.getData().getMarital_status());
+                            beishixuexing.setText(zhaoPianBean.getData().getBlood_type());
+                            beishiliexing.setText(zhaoPianBean.getData().getType());
+                            beishilaiyuan.setText(zhaoPianBean.getData().getSource());
+                            fabingnianling.setText(zhaoPianBean.getData().getAge_of_onset()+"");
+                            zongjiaoxingyang.setText(zhaoPianBean.getData().getReligion());
+                            fenchuangnianling.setText(zhaoPianBean.getData().getSeparate_beds_age()+"");
+                            fuqingxueli.setText(zhaoPianBean.getData().getFather_education());
+                            muqingxueli.setText(zhaoPianBean.getData().getMonther_education());
+                            yangyuzhe.setText(zhaoPianBean.getData().getPrimary_rear_education());
+                            id=zhaoPianBean.getData().getId();
+                            case_number=zhaoPianBean.getData().getCase_number();
+
+
+                        }
+                    });
+
+
+                }catch (Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                        }
+                    });
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
+
+    private void link_xiugai_info() {
+        // showDialog();
+        final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
+        baocun.setText("保存中...");
+
+//    /* form的分割线,自己定义 */
+//        String boundary = "xx--------------------------------------------------------------xx";
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("id",id);
+            jsonObject.put("case_number",case_number);
+            jsonObject.put("real_name",xingming.getText().toString().trim());
+            jsonObject.put("gender",xingbie.getText().toString().trim());
+            jsonObject.put("nation",mingzu.getText().toString().trim());
+            jsonObject.put("birthday",chushengriqi.getText().toString().trim());
+            jsonObject.put("vocation",zhiye.getText().toString().trim());
+            jsonObject.put("phone_number",dengLuBean.getUsername());
+            jsonObject.put("education",wenhuachengdu.getText().toString().trim());
+            jsonObject.put("password",dengLuBean.getPassword());
+            jsonObject.put("siblings",xiongdijiemei.getText().toString().trim());
+            jsonObject.put("raking",paihang.getText().toString().trim());
+            jsonObject.put("marital_status",hunyingzhuangkuang.getText().toString().trim());
+            jsonObject.put("age_of_onset",fabingnianling.getText().toString().trim());
+            jsonObject.put("email",zhuceyouxiang.getText().toString().trim());
+            jsonObject.put("doctor",dengLuBean.getZhuzhiyisheng());
+           // jsonObject.put("diagnosed","");
+            jsonObject.put("blood_type",beishixuexing.getText().toString().trim());
+            jsonObject.put("type",beishiliexing.getText().toString().trim());
+            jsonObject.put("source",beishilaiyuan.getText().toString().trim());
+           // jsonObject.put("province",beishiliexing.getText().toString().trim());
+            jsonObject.put("religion",zongjiaoxingyang.getText().toString().trim());
+            jsonObject.put("separate_beds_age",fenchuangnianling.getText().toString().trim());
+            jsonObject.put("father_education",fuqingxueli.getText().toString().trim());
+            jsonObject.put("monther_education",muqingxueli.getText().toString().trim());
+            jsonObject.put("primary_rear_education",yangyuzhe.getText().toString().trim());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization","Bearer "+dengLuBean.getToken())
+                .post(body)
+               // .get()
+                .url(dengLuBean.getZhuji() + "/api/memberships");
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败"+e.getMessage());
+                //dismissDialog();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        baocun.setText("网络出错");
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                //   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                ResponseBody body = response.body();
+                String ss = body.string().trim();
+                Log.d("DengJiActivity", ss);
+
+                JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+               if (jsonObject.get("error_code").getAsInt()==0){
+                   runOnUiThread(new Runnable() {
+                       @Override
+                       public void run() {
+                           baocun.setText("修改成功");
+
+                       }
+                   });
+               }
+
+                }catch (Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            baocun.setText("修改失败");
+
+                        }
+                    });
+                     Log.d("WebsocketPushMsg", e.getMessage());
+                  }
+            }
+        });
+
+    }
+
 }

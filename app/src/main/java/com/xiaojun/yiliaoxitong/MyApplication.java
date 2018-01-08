@@ -5,15 +5,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
-
 import com.tencent.bugly.Bugly;
 import com.xiaojun.yiliaoxitong.beans.DaoMaster;
 import com.xiaojun.yiliaoxitong.beans.DaoSession;
+import com.xiaojun.yiliaoxitong.beans.DengLuBean;
 import com.xiaojun.yiliaoxitong.cookies.CookiesManager;
-
 import java.io.File;
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 
@@ -125,6 +123,12 @@ public class MyApplication extends Application {
 		// 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
 		mDaoMaster = new DaoMaster(db);
 		mDaoSession = mDaoMaster.newSession();
+		if (mDaoSession.getDengLuBeanDao().load(123456L)==null){
+			DengLuBean baoCunBean=new DengLuBean();
+			baoCunBean.setId(123456L);
+			baoCunBean.setZhuji("http://2hkqd4.natappfree.cc");
+			mDaoSession.getDengLuBeanDao().insert(baoCunBean);
+		}
 
 	}
 
@@ -166,6 +170,8 @@ public class MyApplication extends Application {
 				.retryOnConnectionFailure(true)
 				.build();
 		//okhttpclient.dispatcher().cancelAll();取消所有的请求
+
+
 	}
 
 

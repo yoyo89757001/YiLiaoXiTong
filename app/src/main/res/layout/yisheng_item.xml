@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/top_bg"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_weight="2"
+    android:gravity="center"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/touxiang"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+
+
+    <View
+        android:layout_width="1dp"
+        android:background="@color/huise"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:textColor="@color/blake"
+        android:textSize="20sp"
+        android:text="姓名"
+        android:gravity="center"
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="1dp"
+        android:background="@color/huise"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:textColor="@color/blake"
+        android:textSize="20sp"
+        android:text="执业医院"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:id="@+id/zhiyeyiyuan"
+        android:layout_weight="2"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="1dp"
+        android:background="@color/huise"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:textColor="@color/blake"
+        android:textSize="20sp"
+        android:text="科室"
+        android:id="@+id/keshi"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="1.6"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="1dp"
+        android:background="@color/huise"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:textColor="@color/blake"
+        android:textSize="20sp"
+        android:text="职称"
+        android:id="@+id/zhicheng"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="1.6"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="1dp"
+        android:background="@color/huise"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:textColor="@color/blake"
+        android:textSize="20sp"
+        android:text="门诊地点"
+        android:id="@+id/mengzhengdidian"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="1.6"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="1dp"
+        android:background="@color/huise"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:textColor="@color/blake"
+        android:textSize="20sp"
+        android:text="临床擅长"
+        android:id="@+id/lingchuangshanchang"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="1.6"
+        android:layout_height="wrap_content" />
+    <View
+        android:layout_width="1dp"
+        android:background="@color/huise"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:textColor="@color/blake"
+        android:textSize="20sp"
+        android:text="操作"
+        android:id="@+id/chakan"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="0.8"
+        android:layout_height="wrap_content" />
+
+
+
+</LinearLayout>
+

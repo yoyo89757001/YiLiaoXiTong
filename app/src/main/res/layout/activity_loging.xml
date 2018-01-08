@@ -72,6 +72,10 @@
                         android:paddingLeft="10dp"
                         android:inputType="number"
                         android:maxLength="11"
+                        android:id="@+id/zhanghao"
+                        android:text="13488888888"
+                        android:hint="请输入手机号码"
+                        android:textColorHint="@color/huise2"
                         android:textColor="@color/blake"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -117,7 +121,11 @@
                     <EditText
                         android:background="@null"
                         android:textSize="18sp"
+                        android:hint="请输入密码"
+                        android:textColorHint="@color/huise2"
                         android:paddingLeft="10dp"
+                        android:text="123"
+                        android:id="@+id/mima"
                         android:inputType="textPassword"
                         android:textColor="@color/blake"
                         android:layout_width="match_parent"
@@ -210,6 +218,9 @@
                     <EditText
                         android:background="@null"
                         android:textSize="16sp"
+                        android:id="@+id/zhuzhiyisheng"
+                        android:hint="请输入主治医生"
+                        android:textColorHint="@color/huise2"
                         android:paddingLeft="10dp"
                         android:textColor="@color/blake"
                         android:layout_width="match_parent"
@@ -244,5 +255,36 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/tanchuang"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:layout_height="240dp">
+
+        <ProgressBar
+            android:layout_width="80dp"
+            android:padding="10dp"
+            android:layout_centerInParent="true"
+            android:layout_height="80dp"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:id="@+id/progressBar" />
+
+        <TextView
+            android:textColor="@color/write"
+            android:layout_marginTop="10dp"
+            android:background="@color/lanse33"
+            android:text="提交数据中,请稍后..."
+            android:textSize="18sp"
+            android:gravity="center"
+            android:id="@+id/a1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progressBar"
+            android:layout_centerHorizontal="true" />
+
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
