@@ -70,7 +70,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ImageView im1, im2, im3, im4, im5, im6;
     private LinearLayout l1, l2, l3, l4, l5, l6,ll1,ll2,ll3;
     private EditText xingming,xingbie,mingzu,chushengriqi,zhiye,zhuceyouxiang,wenhuachengdu,paihang,hunyingzhuangkuang;
-    private TextView xiongdijiemei,beishixuexing,beishiliexing,beishilaiyuan,fabingnianling,zongjiaoxingyang,fenchuangnianling,fuqingxueli,muqingxueli,yangyuzhe;
+    private TextView haoma,xiongdijiemei,beishixuexing,beishiliexing,beishilaiyuan,fabingnianling,zongjiaoxingyang,fenchuangnianling,fuqingxueli,muqingxueli,yangyuzhe;
     private Button baocun;
     private PopupWindow popupWindow=null;
     private List<String> stringList=new ArrayList<>();
@@ -182,6 +182,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         yangyuzhe.setOnClickListener(this);
         baocun= (Button) view.findViewById(R.id.baocun2);
         baocun.setOnClickListener(this);
+        haoma= (TextView) view.findViewById(R.id.haoma);
+        haoma.setText(dengLuBean.getUsername());
 
         dataList.add("ddd");
         dataList.add("sss");
@@ -200,11 +202,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         stringList.add("3");
         stringList.add("4");
         stringList.add("5");
-        dataList_ys.add("ddd");
-        dataList_ys.add("sss");
-        dataList_ys.add("ddd");
-        dataList_ys.add("sss");
-        dataList_ys.add("ddd");
 
 
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerview);
@@ -255,6 +252,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         wm.addView(view, wmParams);
 
         link_info();
+        link_ys_list(1,10,null);
     }
 
 
@@ -614,6 +612,93 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     });
                      Log.d("WebsocketPushMsg", e.getMessage());
                   }
+            }
+        });
+
+    }
+
+    private void link_ys_list(int pageIndex,int pageSize,String userName) {
+        // showDialog();
+        final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
+
+//    /* form的分割线,自己定义 */
+//        String boundary = "xx--------------------------------------------------------------xx";
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("cmd","100");
+//            jsonObject.put("account",zhanghao);
+//            jsonObject.put("password",jiami);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        RequestBody body = new FormBody.Builder()
+//                .add("grant_type","password")
+//                .add("username","13488888888")
+//                .add("password","123")
+//                .build();
+        Request.Builder requestBuilder=null;
+        if (userName!=null) {
+             requestBuilder = new Request.Builder()
+                    // .post(body)
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    .get()
+                    .url(dengLuBean.getZhuji() + "/api/doctors?" + "PageIndex=" + pageIndex + "&" + "pageSize=" + pageSize + "&" + "UserName=" + userName);
+        }else {
+             requestBuilder = new Request.Builder()
+                    // .post(body)
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    .get()
+                    .url(dengLuBean.getZhuji() + "/api/doctors?" + "PageIndex=" + pageIndex + "&" + "pageSize=" + pageSize );
+        }
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败"+e.getMessage());
+                //dismissDialog();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                //   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss);
+
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    final GeRenXinXi zhaoPianBean = gson.fromJson(jsonObject, GeRenXinXi.class);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                        }
+                    });
+
+
+                }catch (Exception e){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                        }
+                    });
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
             }
         });
 

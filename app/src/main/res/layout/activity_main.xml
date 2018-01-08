@@ -52,11 +52,10 @@
             android:layout_height="match_parent"/>
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/haoma"
             android:layout_toLeftOf="@+id/ttt"
             android:layout_width="wrap_content"
             android:layout_marginRight="20dp"
-            android:text="15555555555"
             android:textSize="20sp"
             android:textColor="@color/write"
             android:layout_centerVertical="true"
@@ -67,7 +66,7 @@
             android:src="@drawable/head"
             android:id="@+id/head"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/name"
+            android:layout_toLeftOf="@+id/haoma"
             android:layout_marginRight="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
