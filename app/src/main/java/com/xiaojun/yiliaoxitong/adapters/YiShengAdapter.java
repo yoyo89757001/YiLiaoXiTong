@@ -5,10 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xiaojun.yiliaoxitong.R;
+import com.xiaojun.yiliaoxitong.beans.YiShengBeans;
 
 import java.util.List;
 
@@ -18,12 +22,14 @@ import java.util.List;
 
 
 public class YiShengAdapter extends RecyclerView.Adapter<YiShengAdapter.ViewHolder> {
-    private List<String> datas;
+    private List<YiShengBeans.DataBean.RowsBean> datas;
     private Context context=null;
+    private String zhuji;
 
-    public YiShengAdapter(List<String> datas, Context context) {
+    public YiShengAdapter(List<YiShengBeans.DataBean.RowsBean> datas, Context context,String zhuji) {
         this.datas = datas;
         this.context=context;
+        this.zhuji=zhuji;
 
     }
 
@@ -41,8 +47,19 @@ public class YiShengAdapter extends RecyclerView.Adapter<YiShengAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         //判断是否显示字母标题
+        Glide.with(context)
+                .load(zhuji+datas.get(position).getHead_url())
+//                .skipMemoryCache(true)
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                //  .transform(new GlideCircleTransform(RenGongFuWuActivity.this,1, Color.parseColor("#ffffffff")))
+                .into(viewHolder.touxiang);
+        viewHolder.name.setText(datas.get(position).getReal_name());
+        viewHolder.zhiyeyiyuan.setText(datas.get(position).getPractice_hospital());
+        viewHolder.keshi.setText(datas.get(position).getDepartment());
+        viewHolder.zhicheng.setText(datas.get(position).getTitle());
+        viewHolder.mengzhengdidian.setText(datas.get(position).getOutpatient_site());
+        viewHolder.lingchuangshanchang.setText(datas.get(position).getClinical_expertise());
 
-        viewHolder.name.setText(datas.get(position));
         if (position%2==1){
             viewHolder.top_bg.setBackgroundResource(R.color.huise2);
         }else {
@@ -61,6 +78,7 @@ public class YiShengAdapter extends RecyclerView.Adapter<YiShengAdapter.ViewHold
       class ViewHolder extends RecyclerView.ViewHolder {
       private   TextView name,zhiyeyiyuan,keshi,zhicheng,mengzhengdidian,lingchuangshanchang;
       private LinearLayout top_bg;
+      private ImageView touxiang;
 
 
         private ViewHolder(View view){
@@ -72,8 +90,7 @@ public class YiShengAdapter extends RecyclerView.Adapter<YiShengAdapter.ViewHold
             mengzhengdidian= (TextView) view.findViewById(R.id.mengzhengdidian);
             lingchuangshanchang= (TextView) view.findViewById(R.id.lingchuangshanchang);
             top_bg= (LinearLayout) view.findViewById(R.id.top_bg);
-
-
+            touxiang= (ImageView) view.findViewById(R.id.touxiang);
         }
     }
 

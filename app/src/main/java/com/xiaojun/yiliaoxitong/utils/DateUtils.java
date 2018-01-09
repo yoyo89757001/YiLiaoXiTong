@@ -244,6 +244,15 @@ public class DateUtils {
         return times;
     }
 
+    public static String tim33(String time) {
+        SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+        @SuppressWarnings("unused")
+        long lcc = Long.valueOf(time);
+      //  int i = Integer.parseInt(time);
+        String times = sdr.format(new Date(lcc));
+        return times;
+    }
+
     public static String time(String time) {
         SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
         @SuppressWarnings("unused")

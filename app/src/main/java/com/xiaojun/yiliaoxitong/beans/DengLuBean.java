@@ -43,15 +43,18 @@ public class DengLuBean {
     private String password;
     private String token;
     private String zhuzhiyisheng;
-    @Generated(hash = 1297508422)
+    private String zhongduanmingcheng;
+    @Generated(hash = 188629032)
     public DengLuBean(@NotNull Long id, String zhuji, String username,
-            String password, String token, String zhuzhiyisheng) {
+            String password, String token, String zhuzhiyisheng,
+            String zhongduanmingcheng) {
         this.id = id;
         this.zhuji = zhuji;
         this.username = username;
         this.password = password;
         this.token = token;
         this.zhuzhiyisheng = zhuzhiyisheng;
+        this.zhongduanmingcheng = zhongduanmingcheng;
     }
     @Generated(hash = 715002548)
     public DengLuBean() {
@@ -91,6 +94,12 @@ public class DengLuBean {
     }
     public void setZhuzhiyisheng(String zhuzhiyisheng) {
         this.zhuzhiyisheng = zhuzhiyisheng;
+    }
+    public String getZhongduanmingcheng() {
+        return this.zhongduanmingcheng;
+    }
+    public void setZhongduanmingcheng(String zhongduanmingcheng) {
+        this.zhongduanmingcheng = zhongduanmingcheng;
     }
 
 

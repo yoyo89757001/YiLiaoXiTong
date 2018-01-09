@@ -28,6 +28,7 @@ public class DengLuBeanDao extends AbstractDao<DengLuBean, Long> {
         public final static Property Password = new Property(3, String.class, "password", false, "PASSWORD");
         public final static Property Token = new Property(4, String.class, "token", false, "TOKEN");
         public final static Property Zhuzhiyisheng = new Property(5, String.class, "zhuzhiyisheng", false, "ZHUZHIYISHENG");
+        public final static Property Zhongduanmingcheng = new Property(6, String.class, "zhongduanmingcheng", false, "ZHONGDUANMINGCHENG");
     }
 
 
@@ -48,7 +49,8 @@ public class DengLuBeanDao extends AbstractDao<DengLuBean, Long> {
                 "\"USERNAME\" TEXT," + // 2: username
                 "\"PASSWORD\" TEXT," + // 3: password
                 "\"TOKEN\" TEXT," + // 4: token
-                "\"ZHUZHIYISHENG\" TEXT);"); // 5: zhuzhiyisheng
+                "\"ZHUZHIYISHENG\" TEXT," + // 5: zhuzhiyisheng
+                "\"ZHONGDUANMINGCHENG\" TEXT);"); // 6: zhongduanmingcheng
     }
 
     /** Drops the underlying database table. */
@@ -86,6 +88,11 @@ public class DengLuBeanDao extends AbstractDao<DengLuBean, Long> {
         if (zhuzhiyisheng != null) {
             stmt.bindString(6, zhuzhiyisheng);
         }
+ 
+        String zhongduanmingcheng = entity.getZhongduanmingcheng();
+        if (zhongduanmingcheng != null) {
+            stmt.bindString(7, zhongduanmingcheng);
+        }
     }
 
     @Override
@@ -117,6 +124,11 @@ public class DengLuBeanDao extends AbstractDao<DengLuBean, Long> {
         if (zhuzhiyisheng != null) {
             stmt.bindString(6, zhuzhiyisheng);
         }
+ 
+        String zhongduanmingcheng = entity.getZhongduanmingcheng();
+        if (zhongduanmingcheng != null) {
+            stmt.bindString(7, zhongduanmingcheng);
+        }
     }
 
     @Override
@@ -132,7 +144,8 @@ public class DengLuBeanDao extends AbstractDao<DengLuBean, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // username
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // password
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // token
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // zhuzhiyisheng
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // zhuzhiyisheng
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // zhongduanmingcheng
         );
         return entity;
     }
@@ -145,6 +158,7 @@ public class DengLuBeanDao extends AbstractDao<DengLuBean, Long> {
         entity.setPassword(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setToken(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setZhuzhiyisheng(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setZhongduanmingcheng(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
      }
     
     @Override

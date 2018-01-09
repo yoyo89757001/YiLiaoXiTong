@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/top_bg"
+    android:gravity="center_vertical"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
@@ -9,13 +10,14 @@
     android:layout_width="0dp"
     android:layout_weight="2"
     android:gravity="center"
-    android:layout_height="match_parent">
+    android:padding="8dp"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/touxiang"
         android:padding="8dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="180dp" />
 
 </LinearLayout>
 
@@ -104,10 +106,15 @@
         android:background="@color/huise"
         android:layout_height="match_parent"/>
     <TextView
-        android:textColor="@color/blake"
-        android:textSize="20sp"
-        android:text="操作"
+        android:textColor="@color/write"
+        android:textSize="18sp"
+        android:text="查看"
+        android:layout_marginRight="6dp"
+        android:layout_marginLeft="6dp"
+        android:background="@drawable/jiaohu3"
         android:id="@+id/chakan"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:gravity="center"
         android:layout_width="0dp"
         android:layout_weight="0.8"
