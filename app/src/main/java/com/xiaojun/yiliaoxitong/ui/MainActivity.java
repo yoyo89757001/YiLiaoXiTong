@@ -1,7 +1,6 @@
 package com.xiaojun.yiliaoxitong.ui;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +14,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,9 +30,9 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
@@ -47,21 +48,18 @@ import com.xiaojun.yiliaoxitong.adapters.YiShengAdapter;
 import com.xiaojun.yiliaoxitong.beans.DengLuBean;
 import com.xiaojun.yiliaoxitong.beans.DengLuBeanDao;
 import com.xiaojun.yiliaoxitong.beans.GeRenXinXi;
-import com.xiaojun.yiliaoxitong.beans.TokensBean;
+import com.xiaojun.yiliaoxitong.beans.IpFanHuiBean;
 import com.xiaojun.yiliaoxitong.beans.YiShengBeans;
 import com.xiaojun.yiliaoxitong.beans.YiShengInFoBean;
 import com.xiaojun.yiliaoxitong.utils.DateUtils;
 import com.xiaojun.yiliaoxitong.utils.GsonUtil;
+import com.xiaojun.yiliaoxitong.utils.Utils;
 import com.xiaojun.yiliaoxitong.views.WrapContentLinearLayoutManager;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -79,12 +77,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private LayoutInflater mInflater = null;
     private View view = null;
     private TextView t1, t2, t3, t4, t5, t6;
-    private ImageView im1, im2, im3, im4, im5, im6, datouxiang;
+    private ImageView im1, im2, im3, im4, im5, im6, datouxiang,tanchuang2,tuichu;
     private LinearLayout l1, l2, l3, l4, l5, l6, ll1, ll2, ll3, ll4, ll5, ll6;
     private EditText xingming, xingbie, mingzu, chushengriqi, zhiye, zhuceyouxiang, wenhuachengdu, paihang,
             hunyingzhuangkuang, mima1, mima2, mima3, liangbiaosousuo, yisheng_sousuo, mima11, mima22, mima33;
     private TextView haoma, xiongdijiemei, beishixuexing, beishiliexing, beishilaiyuan, fabingnianling, zongjiaoxingyang, fenchuangnianling, fuqingxueli, muqingxueli, yangyuzhe;
-    private Button baocun, fanhui_ys, xiugaimima, xiugaiip;
+    private Button baocun, fanhui_ys, xiugaimima, xiugaiip,a5,a6;
     private TextView xingming_ys, xingbie_ys, mingzu_ys, chushengriqi_ys, zhiyeyiyuan, keshi, zhicheng, mengzhengdidian, lingchuangshanchang;
     private PopupWindow popupWindow = null;
     private List<String> stringList = new ArrayList<>();
@@ -101,6 +99,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private long id = -2;
     private ScrollView scrollView_ys;
     private String case_number = null;
+    private RelativeLayout tanchuang1;
 
 
     @Override
@@ -166,16 +165,60 @@ public class MainActivity extends Activity implements View.OnClickListener {
         im4 = (ImageView) view.findViewById(R.id.im4);
         im5 = (ImageView) view.findViewById(R.id.im5);
         im6 = (ImageView) view.findViewById(R.id.im6);
+        tuichu= (ImageView) view.findViewById(R.id.tuichu);
+        tuichu.setOnClickListener(this);
+        tanchuang2= (ImageView) view.findViewById(R.id.tanchuang2);
+        tanchuang1= (RelativeLayout) view.findViewById(R.id.tanchuang);
+        a5= (Button) view.findViewById(R.id.a5);
+        a5.setOnClickListener(this);
+        a6= (Button) view.findViewById(R.id.a6);
+        a6.setOnClickListener(this);
         xiugaimima = (Button) view.findViewById(R.id.xiugaimima);
         xiugaiip = (Button) view.findViewById(R.id.xiugaimima2);
+        xiugaiip.setEnabled(false);
         xiugaiip.setOnClickListener(this);
         xiugaimima.setOnClickListener(this);
         mima1 = (EditText) view.findViewById(R.id.mima1);
         mima2 = (EditText) view.findViewById(R.id.mima2);
         mima3 = (EditText) view.findViewById(R.id.mima3);
         mima11 = (EditText) view.findViewById(R.id.mima11);
+        mima11.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().equals("123456789")){
+                    mima22.setEnabled(true);
+                    mima33.setEnabled(true);
+                    xiugaiip.setEnabled(true);
+                    mima22.setBackgroundResource(R.drawable.zhongkong);
+                    mima33.setBackgroundResource(R.drawable.zhongkong);
+                    mima22.setText(dengLuBean.getZhongduanmingcheng());
+                    mima33.setText(dengLuBean.getZhuji());
+                }else {
+                    mima22.setEnabled(false);
+                    mima33.setEnabled(false);
+                    xiugaiip.setEnabled(false);
+                    mima22.setBackgroundResource(R.drawable.zhongkong_hui);
+                    mima33.setBackgroundResource(R.drawable.zhongkong_hui);
+                    mima22.setText("");
+                    mima33.setText("");
+                }
+
+            }
+        });
         mima22 = (EditText) view.findViewById(R.id.mima22);
+        mima22.setEnabled(false);
         mima33 = (EditText) view.findViewById(R.id.mima33);
+        mima33.setEnabled(false);
         datouxiang = (ImageView) view.findViewById(R.id.datouxiang);
         TextView time = (TextView) view.findViewById(R.id.time);
         TextView time2 = (TextView) view.findViewById(R.id.time2);
@@ -361,6 +404,19 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 scrollView_ys.setVisibility(View.GONE);
                 ll3.setVisibility(View.VISIBLE);
                 break;
+            case R.id.a5:
+                startActivity(new Intent(MainActivity.this,LogingActivity.class));
+                finish();
+
+                break;
+            case R.id.a6:
+                tanchuang1.setVisibility(View.GONE);
+                tanchuang2.setVisibility(View.GONE);
+                break;
+            case R.id.tuichu:
+                tanchuang1.setVisibility(View.VISIBLE);
+                tanchuang2.setVisibility(View.VISIBLE);
+                break;
             case R.id.xiugaimima:
                 if (!mima1.getText().toString().trim().equals("") && !mima2.getText().toString().trim().equals("") && !mima3.getText().toString().trim().equals("")) {
                     link_xiugaimima();
@@ -369,10 +425,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.xiugaimima2:
                 if (!mima22.getText().toString().trim().equals("") && !mima33.getText().toString().trim().equals("")) {
 
-
+                    link_chaxunSB(Utils.getUniqueId(MainActivity.this));
                     // link_xinzengSB();
+                }else {
+                    xiugaiip.setText("信息不全");
                 }
-                link_chaxunSB("12345678");
+
                 break;
             case R.id.xiongdijiemei:
                 View contentView = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
@@ -973,29 +1031,30 @@ public class MainActivity extends Activity implements View.OnClickListener {
         // showDialog();
         final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
-
+      //  Log.d("MainActivity", Utils.getUniqueId(MainActivity.this));
 //    /* form的分割线,自己定义 */
 //        String boundary = "xx--------------------------------------------------------------xx";
         JSONObject jsonObject = new JSONObject();
         if (id != -1) {
             try {
                 jsonObject.put("id", id);
-                jsonObject.put("serial_number", "12345678");
+                jsonObject.put("serial_number", Utils.getUniqueId(MainActivity.this));
                 jsonObject.put("terminal_name", mima22.getText().toString().trim());
                 jsonObject.put("ip_address", "");
                 jsonObject.put("server_ip_address", mima33.getText().toString().trim());
                 jsonObject.put("status", 1);
                 // jsonObject.put("create_date",DateUtils.tim33(System.currentTimeMillis()+""));
+              //  Log.d("MainActivity", mima33.getText().toString().trim());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         } else {
            // Log.d("MainActivity", getIMEI(MainActivity.this)+"");
             try {
-                jsonObject.put("serial_number", "12345678");
-                jsonObject.put("terminal_name", mima22.getText().toString().trim()+"pad111111");
+                jsonObject.put("serial_number", Utils.getUniqueId(MainActivity.this));
+                jsonObject.put("terminal_name", mima22.getText().toString().trim());
                 jsonObject.put("ip_address", "");
-                jsonObject.put("server_ip_address", mima33.getText().toString().trim()+"192.192.192");
+                jsonObject.put("server_ip_address", mima33.getText().toString().trim());
                 jsonObject.put("status", 1);
                 //  jsonObject.put("create_date",DateUtils.tim33(System.currentTimeMillis()+""));
             } catch (JSONException e) {
@@ -1023,7 +1082,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        xiugaiip.setText("网络出错");
+                        dengLuBean.setZhongduanmingcheng(mima22.getText().toString().trim());
+                        dengLuBean.setZhuji(mima33.getText().toString().trim());
+                        dengLuBeanDao.update(dengLuBean);
+                        dengLuBean=dengLuBeanDao.load(123456L);
                     }
                 });
             }
@@ -1044,6 +1107,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             @Override
                             public void run() {
 
+                                xiugaiip.setText("保存成功");
+                                dengLuBean.setZhongduanmingcheng(mima22.getText().toString().trim());
+                                dengLuBean.setZhuji(mima33.getText().toString().trim());
+                                dengLuBeanDao.update(dengLuBean);
+                                dengLuBean=dengLuBeanDao.load(123456L);
 
                             }
                         });
@@ -1053,8 +1121,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-
-
+                            xiugaiip.setText("修改出错");
+                            dengLuBean.setZhongduanmingcheng(mima22.getText().toString().trim());
+                            dengLuBean.setZhuji(mima33.getText().toString().trim());
+                            dengLuBeanDao.update(dengLuBean);
+                            dengLuBean=dengLuBeanDao.load(123456L);
                         }
                     });
                     Log.d("WebsocketPushMsg", e.getMessage());
@@ -1093,7 +1164,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        baocun.setText("网络出错");
+                        xiugaiip.setText("网络出错");
+                        dengLuBean.setZhongduanmingcheng(mima22.getText().toString().trim());
+                        dengLuBean.setZhuji(mima33.getText().toString().trim());
+                        dengLuBeanDao.update(dengLuBean);
+                        dengLuBean=dengLuBeanDao.load(123456L);
                     }
                 });
             }
@@ -1109,16 +1184,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Log.d("DengJiActivity", ss);
 
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    final IpFanHuiBean zhaoPianBean = gson.fromJson(jsonObject, IpFanHuiBean.class);
+                    if (zhaoPianBean.getError_code()==0){
 
-                    if (jsonObject.get("data").getAsString() == null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+                        link_xinzengSB(zhaoPianBean.getData().getId());
 
-
-                            }
-                        });
                     }
+
+
 
                 } catch (Exception e) {
                     link_xinzengSB(-1);
@@ -1130,24 +1204,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    /**
-     * 获取手机IMEI号
-     */
-    public String getIMEI(Context context) {
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return telephonyManager.getDeviceId();
-        }
 
 
-        return null;
-    }
 }

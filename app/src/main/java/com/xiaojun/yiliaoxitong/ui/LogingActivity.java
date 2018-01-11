@@ -93,7 +93,7 @@ public class LogingActivity extends Activity {
         denglu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("LogingActivity", "dddd");
+              //  Log.d("LogingActivity", "dddd");
             //    startActivity(new Intent(LogingActivity.this,MainActivity.class));
             //    wm.removeView(view);
             //    finish();

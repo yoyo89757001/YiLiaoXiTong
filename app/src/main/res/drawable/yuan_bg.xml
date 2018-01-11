@@ -21,7 +21,7 @@
  -->
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle"
+    android:shape="oval"
 
     >
     <!-- shape=["rectangle" | "oval" | "line" | "ring"]-->
@@ -35,8 +35,8 @@
             android:bottomLeftRadius   整型 左下角半径
             android:bottomRightRadius  整型 右下角半径
      -->
-    <corners
-        android:radius="8dp"/>
+    <!--<corners-->
+        <!--android:radius="8dp"/>-->
         <!--android:topLeftRadius="5dp"-->
         <!--android:topRightRadius="15dp"-->
         <!--android:bottomLeftRadius="20dp"-->
@@ -101,7 +101,7 @@ linear 线性渐变，这是默认设置,radial 放射性渐变，以开始色�
     -->
     <!-- 存在填充色的时候看不出渐变的效果，渐变色被覆盖 -->
     <solid
-        android:color="#dddddd"
+        android:color="#ffffff"
         />
 
     <!--
@@ -112,6 +112,7 @@ linear 线性渐变，这是默认设置,radial 放射性渐变，以开始色�
        android:dashGap   整型  表示描边为虚线时，虚线之间的间隔 即“ - - - - ”
     -->
     <stroke
+
         android:width="1dp"
         android:color="#cccccc"
         />

@@ -63,7 +63,7 @@
 
 
         <ImageView
-            android:src="@drawable/head"
+            android:src="@drawable/tou_bg"
             android:id="@+id/head"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/haoma"
@@ -111,7 +111,12 @@
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
-
+                <ImageView
+                    android:id="@+id/im11"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/gerenxinxi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
                 <TextView
                     android:textColor="@color/lanse2"
                     android:textSize="22sp"
@@ -433,6 +438,7 @@
                                     android:layout_width="0dp"
                                     android:layout_weight="0.4"
                                     android:layout_height="match_parent"/>
+
                                 <TextView
                                     android:textSize="18sp"
                                     android:textColor="@color/blake"
@@ -930,6 +936,7 @@
                                     android:layout_height="match_parent"/>
 
                             </LinearLayout>
+
                             <LinearLayout
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical"
@@ -1810,10 +1817,8 @@
                             android:layout_weight="1"
                             android:background="@drawable/zhongkong_hui"
                             android:textSize="20sp"
-                            android:inputType="textPassword"
                             android:paddingTop="8dp"
                             android:id="@+id/mima22"
-                            android:enabled="false"
                             android:gravity="center_vertical"
                             android:paddingBottom="8dp"
                             android:paddingLeft="8dp"
@@ -1845,8 +1850,6 @@
                             android:layout_weight="1"
                             android:background="@drawable/zhongkong_hui"
                             android:textSize="20sp"
-                            android:enabled="false"
-                            android:inputType="textPassword"
                             android:paddingTop="8dp"
                             android:id="@+id/mima33"
                             android:gravity="center_vertical"
@@ -1879,4 +1882,88 @@
             <!--"底部"-->
         </LinearLayout>
     </LinearLayout>
+
+  <ImageView
+      android:background="@color/touming"
+      android:id="@+id/tanchuang2"
+      android:visibility="gone"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:background="@color/write"
+        android:visibility="gone"
+       android:layout_centerInParent="true"
+        android:id="@+id/tanchuang"
+        android:layout_height="240dp">
+        <TextView
+            android:textColor="@color/lanse33"
+            android:text="温馨提示"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:id="@+id/a1"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_below="@+id/a1"
+            android:id="@+id/a2"
+            android:background="@color/huise2"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="1dp"/>
+
+
+        <TextView
+            android:layout_below="@+id/a2"
+            android:id="@+id/a3"
+            android:textSize="14sp"
+            android:text="你确定要退出吗？"
+            android:textColor="@color/blake"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="90dp"
+                android:textColor="@color/write"
+                android:textSize="16sp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/a5"
+                android:background="@drawable/jiaohu3"
+                android:text="退出"
+                android:gravity="center"
+                android:layout_height="44dp" />
+
+            <Button
+                android:layout_width="90dp"
+                android:textColor="@color/write"
+                android:textSize="16sp"
+                android:id="@+id/a6"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/jiaohu3"
+                android:text="取消"
+                android:gravity="center"
+                android:layout_height="44dp" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
 </RelativeLayout>

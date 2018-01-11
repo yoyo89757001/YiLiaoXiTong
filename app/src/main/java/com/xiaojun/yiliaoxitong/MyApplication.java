@@ -126,7 +126,7 @@ public class MyApplication extends Application {
 		if (mDaoSession.getDengLuBeanDao().load(123456L)==null){
 			DengLuBean baoCunBean=new DengLuBean();
 			baoCunBean.setId(123456L);
-			baoCunBean.setZhuji("http://2hkqd4.natappfree.cc");
+			baoCunBean.setZhuji("http://q2zpyu.natappfree.cc");
 			mDaoSession.getDengLuBeanDao().insert(baoCunBean);
 		}
 
