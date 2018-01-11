@@ -44,7 +44,7 @@ public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.View
 
         viewHolder.mingcheng.setText(datas.get(position));
         if (position%2==1){
-            viewHolder.top_bg.setBackgroundResource(R.color.huise2);
+            viewHolder.top_bg.setBackgroundResource(R.color.huise3);
         }else {
             viewHolder.top_bg.setBackgroundResource(R.color.write);
         }

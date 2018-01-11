@@ -61,7 +61,7 @@ public class YiShengAdapter extends RecyclerView.Adapter<YiShengAdapter.ViewHold
         viewHolder.lingchuangshanchang.setText(datas.get(position).getClinical_expertise());
 
         if (position%2==1){
-            viewHolder.top_bg.setBackgroundResource(R.color.huise2);
+            viewHolder.top_bg.setBackgroundResource(R.color.huise3);
         }else {
             viewHolder.top_bg.setBackgroundResource(R.color.write);
         }

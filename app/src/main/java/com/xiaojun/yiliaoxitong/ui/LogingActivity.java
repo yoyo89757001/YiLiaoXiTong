@@ -80,6 +80,7 @@ public class LogingActivity extends Activity {
         view = mInflater.inflate(R.layout.activity_loging, null);
         wmParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
         wmParams.format = PixelFormat.OPAQUE;
+        wmParams.screenOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         wmParams.flags=WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;;
         wmParams.width=dw;
@@ -102,10 +103,10 @@ public class LogingActivity extends Activity {
             }
         });
 
-
         wm.addView(view, wmParams);
 
     }
+
 
 
     private void link_save() {

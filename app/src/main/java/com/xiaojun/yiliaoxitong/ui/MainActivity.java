@@ -77,7 +77,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private LayoutInflater mInflater = null;
     private View view = null;
     private TextView t1, t2, t3, t4, t5, t6;
-    private ImageView im1, im2, im3, im4, im5, im6, datouxiang,tanchuang2,tuichu;
+    private ImageView im1, im2, im3, im4, im5, im6, datouxiang,tanchuang2,tuichu,im11,im22,im33,im44,im55,im66;
     private LinearLayout l1, l2, l3, l4, l5, l6, ll1, ll2, ll3, ll4, ll5, ll6;
     private EditText xingming, xingbie, mingzu, chushengriqi, zhiye, zhuceyouxiang, wenhuachengdu, paihang,
             hunyingzhuangkuang, mima1, mima2, mima3, liangbiaosousuo, yisheng_sousuo, mima11, mima22, mima33;
@@ -129,6 +129,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         view = mInflater.inflate(R.layout.activity_main, null);
         wmParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
         wmParams.format = PixelFormat.OPAQUE;
+        wmParams.screenOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         wmParams.flags = WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;
         ;
@@ -165,6 +166,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         im4 = (ImageView) view.findViewById(R.id.im4);
         im5 = (ImageView) view.findViewById(R.id.im5);
         im6 = (ImageView) view.findViewById(R.id.im6);
+        im11 = (ImageView) view.findViewById(R.id.im11);
+        im22 = (ImageView) view.findViewById(R.id.im22);
+        im33 = (ImageView) view.findViewById(R.id.im33);
+        im44 = (ImageView) view.findViewById(R.id.im44);
+        im55 = (ImageView) view.findViewById(R.id.im55);
+        im66 = (ImageView) view.findViewById(R.id.im66);
         tuichu= (ImageView) view.findViewById(R.id.tuichu);
         tuichu.setOnClickListener(this);
         tanchuang2= (ImageView) view.findViewById(R.id.tanchuang2);
@@ -346,6 +353,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 chongzhi();
                 l1.setBackgroundResource(R.color.write);
                 im1.setBackgroundResource(R.drawable.lanjiantou);
+                im11.setBackgroundResource(R.drawable.gerenxinxi);
                 t1.setTextColor(Color.parseColor("#008AFF"));
                 baocun.setText("保 存");
                 setViewGoen();
@@ -356,6 +364,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                 l2.setBackgroundResource(R.color.write);
                 im2.setBackgroundResource(R.drawable.lanjiantou);
+                im22.setBackgroundResource(R.drawable.liangbiao);
                 t2.setTextColor(Color.parseColor("#008AFF"));
                 setViewGoen();
                 ll2.setVisibility(View.VISIBLE);
@@ -365,6 +374,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 chongzhi();
                 l3.setBackgroundResource(R.color.write);
                 im3.setBackgroundResource(R.drawable.lanjiantou);
+                im33.setBackgroundResource(R.drawable.yisheng);
                 t3.setTextColor(Color.parseColor("#008AFF"));
                 setViewGoen();
                 ll3.setVisibility(View.VISIBLE);
@@ -374,6 +384,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 chongzhi();
                 l4.setBackgroundResource(R.color.write);
                 im4.setBackgroundResource(R.drawable.lanjiantou);
+                im44.setBackgroundResource(R.drawable.defenbaogao);
                 t4.setTextColor(Color.parseColor("#008AFF"));
                 setViewGoen();
                 ll4.setVisibility(View.VISIBLE);
@@ -382,6 +393,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 chongzhi();
                 l5.setBackgroundResource(R.color.write);
                 im5.setBackgroundResource(R.drawable.lanjiantou);
+                im55.setBackgroundResource(R.drawable.xiugaimima);
                 t5.setTextColor(Color.parseColor("#008AFF"));
                 setViewGoen();
                 ll5.setVisibility(View.VISIBLE);
@@ -391,6 +403,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 l6.setBackgroundResource(R.color.write);
                 im6.setBackgroundResource(R.drawable.lanjiantou);
                 t6.setTextColor(Color.parseColor("#008AFF"));
+                im66.setBackgroundResource(R.drawable.shezhi);
                 setViewGoen();
                 ll6.setVisibility(View.VISIBLE);
                 break;
@@ -523,7 +536,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         l6.setBackgroundResource(R.color.blake);
         im6.setBackgroundResource(R.drawable.baijiantou);
         t6.setTextColor(Color.parseColor("#ffffff"));
-
+        im11.setBackgroundResource(R.drawable.gerenxinxi2);
+        im22.setBackgroundResource(R.drawable.liangbiao2);
+        im33.setBackgroundResource(R.drawable.yisheng2);
+        im44.setBackgroundResource(R.drawable.defenbaogao2);
+        im55.setBackgroundResource(R.drawable.xiugaimima2);
+        im66.setBackgroundResource(R.drawable.shezhi2);
 
     }
 

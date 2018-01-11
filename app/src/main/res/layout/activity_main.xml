@@ -111,15 +111,17 @@
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
+
                 <ImageView
                     android:id="@+id/im11"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/gerenxinxi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+
                 <TextView
                     android:textColor="@color/lanse2"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:text="个人信息"
                     android:id="@+id/t1"
                     android:layout_width="wrap_content"
@@ -142,9 +144,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
 
+                <ImageView
+                    android:id="@+id/im22"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/liangbiao2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
+
                 <TextView
                     android:textColor="@color/write"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:text="测试量表"
                     android:id="@+id/t2"
                     android:layout_width="wrap_content"
@@ -166,10 +175,16 @@
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
+                <ImageView
+                    android:id="@+id/im33"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/yisheng2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
 
                 <TextView
                     android:textColor="@color/write"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:text="医生展示"
                     android:id="@+id/t3"
                     android:layout_width="wrap_content"
@@ -191,10 +206,15 @@
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
-
+                <ImageView
+                    android:id="@+id/im44"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/defenbaogao2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
                 <TextView
                     android:textColor="@color/write"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:id="@+id/t4"
                     android:text="得分报告"
                     android:layout_width="wrap_content"
@@ -216,10 +236,16 @@
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
+                <ImageView
+                    android:id="@+id/im55"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/xiugaimima2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
 
                 <TextView
                     android:textColor="@color/write"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:text="修改密码"
                     android:id="@+id/t5"
                     android:layout_width="wrap_content"
@@ -241,10 +267,16 @@
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="0dp">
+                <ImageView
+                    android:id="@+id/im66"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/shezhi2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp" />
 
                 <TextView
                     android:textColor="@color/write"
-                    android:textSize="22sp"
+                    android:textSize="18sp"
                     android:text="终端设置"
                     android:id="@+id/t6"
                     android:layout_width="wrap_content"
