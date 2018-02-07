@@ -241,4 +241,13 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:layout_width="100dp"
+        android:src="@drawable/shezhi2"
+        android:id="@+id/shezhi"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:padding="26dp"
+        android:layout_height="100dp" />
+
 </RelativeLayout>

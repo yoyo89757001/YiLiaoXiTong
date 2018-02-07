@@ -5,6 +5,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.util.Log;
+
 import com.tencent.bugly.Bugly;
 import com.xiaojun.yiliaoxitong.beans.DaoMaster;
 import com.xiaojun.yiliaoxitong.beans.DaoSession;
@@ -56,6 +58,12 @@ public class MyApplication extends Application {
 //				//x5内核初始化接口
 //				QbSdk.initX5Environment(getApplicationContext(),  cb);
 
+					String path= Environment.getExternalStorageDirectory()+File.separator+"linhefile";
+					File destDir = new File(path);
+
+					if (!destDir.exists()) {
+						destDir.mkdirs();
+					}
 				Bugly.init(getApplicationContext(), "2f898c1f0e", false);
 
 				} catch (Exception e) {
@@ -63,12 +71,6 @@ public class MyApplication extends Application {
 				}
 					myApplication = this;
 
-		String path= Environment.getExternalStorageDirectory()+File.separator+"linhefile";
-		File destDir = new File(path);
-
-		if (!destDir.exists()) {
-			destDir.mkdirs();
-		}
 
 
 		//getOkHttpClient();
@@ -118,7 +120,7 @@ public class MyApplication extends Application {
 		// 可能你已经注意到了，你并不需要去编写「CREATE TABLE」这样的 SQL 语句，因为 greenDAO 已经帮你做了。
 		// 注意：默认的 DaoMaster.DevOpenHelper 会在数据库升级时，删除所有的表，意味着这将导致数据的丢失。
 		// 所以，在正式的项目中，你还应该做一层封装，来实现数据库的安全升级。
-		mHelper = new DaoMaster.DevOpenHelper(this, "noteukkk", null);
+		mHelper = new DaoMaster.DevOpenHelper(this, "noteukkkll", null);
 		SQLiteDatabase db = mHelper.getWritableDatabase();
 		// 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
 		mDaoMaster = new DaoMaster(db);
@@ -126,8 +128,9 @@ public class MyApplication extends Application {
 		if (mDaoSession.getDengLuBeanDao().load(123456L)==null){
 			DengLuBean baoCunBean=new DengLuBean();
 			baoCunBean.setId(123456L);
-			baoCunBean.setZhuji("http://q2zpyu.natappfree.cc");
+			baoCunBean.setZhuji("http://gz.s1.natapp.cc");
 			mDaoSession.getDengLuBeanDao().insert(baoCunBean);
+			Log.d("LogingActivity", "插入");
 		}
 
 	}

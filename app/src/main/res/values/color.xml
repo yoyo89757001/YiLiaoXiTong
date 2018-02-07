@@ -4,10 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="write">#ffffff</color>
-    <color name="lanse">#664dd6</color>
     <color name="blake">#333333</color>
     <color name="blake2">#c4bcbc</color>
-    <color name="blake3">#c4bcbc</color>
     <color name="lanse2">#299efd</color>
     <color name="lanse3">#e2c9e4fa</color>
     <color name="huise">#fafbfc</color>

@@ -15,8 +15,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -29,15 +30,15 @@ import com.xiaojun.yiliaoxitong.beans.TokensBean;
 import com.xiaojun.yiliaoxitong.utils.GsonUtil;
 import com.xiaojun.yiliaoxitong.utils.Utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
-import java.util.List;
+
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
 import okhttp3.FormBody;
-import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -56,7 +57,7 @@ public class LogingActivity extends Activity {
     private RelativeLayout tanchuang;
     private Button denglu;
     private EditText zhanghao,mima,zhuzhiyisheng;
-
+    private ImageView shezhi;
 
     @SuppressLint("InflateParams")
     @Override
@@ -65,6 +66,7 @@ public class LogingActivity extends Activity {
         dengLuBeanDao=MyApplication.getAppContext().getDaoSession().getDengLuBeanDao();
         dengLuBean=dengLuBeanDao.load(123456L);
 
+        link_xinzengSB();
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         dw=dm.widthPixels;
@@ -87,6 +89,7 @@ public class LogingActivity extends Activity {
         wmParams.height=dh;
         zhanghao= (EditText) view.findViewById(R.id.zhanghao);
         mima= (EditText) view.findViewById(R.id.mima);
+        shezhi= (ImageView) view.findViewById(R.id.shezhi);
         zhuzhiyisheng= (EditText) view.findViewById(R.id.zhuzhiyisheng);
 
         tanchuang= (RelativeLayout) view.findViewById(R.id.tanchuang);
@@ -102,6 +105,13 @@ public class LogingActivity extends Activity {
                 link_save();
             }
         });
+        shezhi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LogingActivity.this,SheZhiActivity.class));
+            }
+        });
+
 
         wm.addView(view, wmParams);
 
@@ -125,10 +135,11 @@ public class LogingActivity extends Activity {
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-        RequestBody body = new FormBody.Builder()
+            RequestBody body = new FormBody.Builder()
                 .add("grant_type","password")
                 .add("username",zhanghao.getText().toString().trim())
                 .add("password",mima.getText().toString().trim())
+                .add("client_id",Utils.getUniqueId(LogingActivity.this))
                 .build();
 
          Request.Builder requestBuilder = new Request.Builder()
@@ -183,6 +194,92 @@ public class LogingActivity extends Activity {
                         }
                     });
                   //  dismissDialog();
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
+
+    private void link_xinzengSB() {
+        // showDialog();
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+        //  Log.d("MainActivity", Utils.getUniqueId(MainActivity.this));
+//    /* form的分割线,自己定义 */
+//        String boundary = "xx--------------------------------------------------------------xx";
+        JSONObject jsonObject = new JSONObject();
+
+            // Log.d("MainActivity", getIMEI(MainActivity.this)+"");
+            try {
+                jsonObject.put("serial_number", Utils.getUniqueId(LogingActivity.this));
+                jsonObject.put("terminal_name", "");
+                jsonObject.put("ip_address", "");
+                jsonObject.put("server_ip_address", "");
+                jsonObject.put("status", 3);
+                //  jsonObject.put("create_date",DateUtils.tim33(System.currentTimeMillis()+""));
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+        }
+
+
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                .post(body)
+                // .get()
+                .url(dengLuBean.getZhuji() + "/api/terminals");
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                //dismissDialog();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        dengLuBean.setZhongduanmingcheng("");
+                        dengLuBean.setZhuzhiyisheng("");
+                        dengLuBeanDao.update(dengLuBean);
+                        dengLuBean=dengLuBeanDao.load(123456L);
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                //   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss+"[]");
+
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    if (jsonObject.get("error_code").getAsInt() == 0) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+
+                                dengLuBean.setZhongduanmingcheng("");
+                                dengLuBean.setZhuzhiyisheng("");
+                                dengLuBeanDao.update(dengLuBean);
+                                dengLuBean=dengLuBeanDao.load(123456L);
+
+                            }
+                        });
+                    }
+
+                } catch (Exception e) {
+
                     Log.d("WebsocketPushMsg", e.getMessage());
                 }
             }

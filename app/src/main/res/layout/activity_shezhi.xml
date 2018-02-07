@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/bgbg"
+    android:layout_height="match_parent"
+    tools:context="com.xiaojun.yiliaoxitong.ui.LogingActivity">
+
+
+
+    <LinearLayout
+        android:id="@+id/ll6"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_weight="1"
+            android:id="@+id/fanhui"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp">
+
+
+            <TextView
+                android:textColor="@color/write"
+                android:layout_marginLeft="20dp"
+                android:textSize="24sp"
+                android:layout_centerVertical="true"
+                android:text="返回登录"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_weight="8"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="输入管理员密码: "
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/write"
+                    android:textSize="20sp"
+                    android:gravity="right"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/zhongkong"
+                    android:textSize="20sp"
+                    android:inputType="textPassword"
+                    android:paddingTop="8dp"
+                    android:id="@+id/mima11"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textColor="@color/blake"
+                    android:layout_height="wrap_content" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="1dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="18dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="终端名称: "
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/write"
+                    android:textSize="20sp"
+                    android:gravity="right"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/zhongkong_hui"
+                    android:textSize="20sp"
+                    android:paddingTop="8dp"
+                    android:id="@+id/mima22"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textColor="@color/blake"
+                    android:layout_height="wrap_content" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="1dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_marginTop="18dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="服务器ip: "
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:textColor="@color/write"
+                    android:textSize="20sp"
+                    android:gravity="right"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/zhongkong_hui"
+                    android:textSize="20sp"
+                    android:paddingTop="8dp"
+                    android:id="@+id/mima33"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:textColor="@color/blake"
+                    android:layout_height="wrap_content" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="1dp"/>
+
+            </LinearLayout>
+
+            <Button
+                android:textSize="20sp"
+                android:textColor="@color/write"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/jiaohu3"
+                android:text="修改"
+                android:id="@+id/xiugaimima2"
+                android:layout_width="140dp"
+                android:layout_height="56dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
