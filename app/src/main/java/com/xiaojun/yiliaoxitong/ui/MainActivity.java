@@ -12,10 +12,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,8 +31,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+
 import com.bumptech.glide.Glide;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
+import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.github.jdsjlzx.recyclerview.ProgressStyle;
@@ -42,6 +49,7 @@ import com.xiaojun.yiliaoxitong.adapters.YiShengAdapter;
 import com.xiaojun.yiliaoxitong.beans.DengLuBean;
 import com.xiaojun.yiliaoxitong.beans.DengLuBeanDao;
 import com.xiaojun.yiliaoxitong.beans.GeRenXinXi;
+import com.xiaojun.yiliaoxitong.beans.LiangBiaoBean;
 import com.xiaojun.yiliaoxitong.beans.YiShengBeans;
 import com.xiaojun.yiliaoxitong.beans.YiShengInFoBean;
 import com.xiaojun.yiliaoxitong.utils.DateUtils;
@@ -65,6 +73,7 @@ import okhttp3.ResponseBody;
 
 public class MainActivity extends Activity implements View.OnClickListener {
     private int dw, dh;
+    private int qingQiuYe=1;
     private WindowManager wm;
     private LayoutInflater mInflater = null;
     private View view = null;
@@ -82,7 +91,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private LRecyclerView lRecyclerView, lRecyclerView_ys;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
     private LRecyclerViewAdapter lRecyclerViewAdapter_ys;
-    private List<String> dataList = new ArrayList<>();
+    private List<LiangBiaoBean.DataBean.GuagesBean.RowsBean> dataList = new ArrayList<>();
     private List<YiShengBeans.DataBean.RowsBean> dataList_ys = new ArrayList<>();
     private LiangBiaoAdapter taiZhangAdapter;
     private YiShengAdapter yiShengAdapter;
@@ -92,7 +101,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ScrollView scrollView_ys;
     private String case_number = null;
     private RelativeLayout tanchuang1;
-
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +136,42 @@ public class MainActivity extends Activity implements View.OnClickListener {
         ;
         wmParams.width = dw;
         wmParams.height = dh;
+
+        webView= (WebView) view.findViewById(R.id.web);
+        WebSettings webSettings = webView.getSettings();
+        //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
+        webSettings.setJavaScriptEnabled(true);
+        // 若加载的 html 里有JS 在执行动画等操作，会造成资源浪费（CPU、电量）
+        // 在 onStop 和 onResume 里分别把 setJavaScriptEnabled() 给设置成 false 和 true 即可
+        //支持插件
+        // webSettings.setPluginsEnabled(true);
+        //设置自适应屏幕，两者合用
+        webSettings.setUseWideViewPort(true); //将图片调整到适合webview的大小
+        webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
+        //缩放操作
+        webSettings.setSupportZoom(true); //支持缩放，默认为true。是下面那个的前提。
+        webSettings.setBuiltInZoomControls(true); //设置内置的缩放控件。若为false，则该WebView不可缩放
+        webSettings.setDisplayZoomControls(false); //隐藏原生的缩放控件
+        webSettings.setAppCacheEnabled(true);
+        //设置 缓存模式
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        // 开启 DOM storage API 功能
+        webSettings.setDomStorageEnabled(true);
+        //其他细节操作
+        //  webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); //关闭webview中缓存
+        webSettings.setAllowFileAccess(true); //设置可以访问文件
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
+        webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
+        webSettings.setDefaultTextEncodingName("utf-8");//设置编码格式
+        webView.setWebViewClient(new WebViewClient() {
+            //覆盖shouldOverrideUrlLoading 方法
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
+
 
         t1 = (TextView) view.findViewById(R.id.t1);
         t2 = (TextView) view.findViewById(R.id.t2);
@@ -225,17 +270,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         liangbiaosousuo = (EditText) view.findViewById(R.id.liangbiaosuosuo);
         yisheng_sousuo = (EditText) view.findViewById(R.id.yisheng_sousuo);
 
-        dataList.add("ddd");
-        dataList.add("sss");
-        dataList.add("ddd");
-        dataList.add("sss");
-        dataList.add("sss");
+
         stringList.add("1");
         stringList.add("2");
         stringList.add("3");
         stringList.add("4");
         stringList.add("5");
-
 
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerview);
         lRecyclerView_ys = (LRecyclerView) view.findViewById(R.id.recyclerview_ys);
@@ -252,13 +292,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
         lRecyclerView.setFooterViewHint("拼命加载中", "--------我是有底线的--------", "网络不给力...");
         lRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         lRecyclerView.setPullRefreshEnabled(false);
+        lRecyclerView.setLoadMoreEnabled(true);
         lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                link_liangbiao_url(dataList.get(position).getGuage_id());
 
             }
         });
+        lRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                qingQiuYe++;
+                //加载更多
+                link_liangbiao_list(qingQiuYe,20);
+
+            }
+        });
+
+
         //医生的
         yiShengAdapter = new YiShengAdapter(dataList_ys, MainActivity.this, dengLuBean.getZhuji());
         lRecyclerViewAdapter_ys = new LRecyclerViewAdapter(yiShengAdapter);
@@ -288,6 +340,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         link_info();
         link_ys_list(1, 10, null);
+
     }
 
 
@@ -314,6 +367,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 setViewGoen();
                 ll2.setVisibility(View.VISIBLE);
                 HideKeyboard(liangbiaosousuo);
+                if (id!=-2)
+                link_liangbiao_list(1,20);
+                lRecyclerView.setVisibility(View.VISIBLE);
+                webView.setVisibility(View.GONE);
                 break;
             case R.id.l3:
                 chongzhi();
@@ -772,6 +829,208 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 dataList_ys.addAll(zhaoPianBean.getData().getRows());
                             yiShengAdapter.notifyDataSetChanged();
 
+                        }
+                    });
+
+
+                } catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                        }
+                    });
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
+
+    private void link_liangbiao_list(int pageIndex, int pageSize) {
+        // showDialog();
+        //  final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+
+//    /* form的分割线,自己定义 */
+//        String boundary = "xx--------------------------------------------------------------xx";
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("cmd","100");
+//            jsonObject.put("account",zhanghao);
+//            jsonObject.put("password",jiami);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        RequestBody body = new FormBody.Builder()
+//                .add("grant_type","password")
+//                .add("username","13488888888")
+//                .add("password","123")
+//                .build();
+        Request.Builder requestBuilder = null;
+
+            requestBuilder = new Request.Builder()
+                    // .post(body)
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    .get()
+                    .url(dengLuBean.getZhuji() + "/api/guages/join?" + "PageIndex=" + pageIndex + "&" + "pageSize=" + pageSize+"&UserId="+id);
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                //dismissDialog();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            if (dataList.size()!=0){
+                                dataList.clear();
+                            }
+                             lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
+                            taiZhangAdapter.notifyDataSetChanged();
+                        }
+                    });}
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss);
+
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    final LiangBiaoBean zhaoPianBean = gson.fromJson(jsonObject, LiangBiaoBean.class);
+                    if (qingQiuYe==1){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (dataList.size()!=0){
+                                    dataList.clear();
+                                }
+                                dataList.addAll(zhaoPianBean.getData().getGuages().getRows()!=null?zhaoPianBean.getData().getGuages().getRows():new ArrayList<LiangBiaoBean.DataBean.GuagesBean.RowsBean>());
+
+                                lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
+                                taiZhangAdapter.notifyDataSetChanged();
+                                //  Log.d("Fragment1", "dataList.size():" + dataList.size());
+                            }
+                        });
+
+
+                }else {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                int size=zhaoPianBean.getData().getGuages().getRows().size();
+                                for (int i=0;i<size;i++){
+                                    dataList.add(zhaoPianBean.getData().getGuages().getRows().get(i));
+                                }
+
+                                lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
+                                taiZhangAdapter.notifyDataSetChanged();
+                                //  Log.d("Fragment1", "dataList.size():" + dataList.size());
+                            }
+                        });
+                    }
+
+
+                if (zhaoPianBean.getData().getGuages().getRows().size()==0 && dataList.size()>=20){
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lRecyclerView.setNoMore(true);
+                            }
+                        });
+
+                }
+
+                } catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                        }
+                    });
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
+
+    private void link_liangbiao_url(String guageid) {
+        // showDialog();
+        //  final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+
+//    /* form的分割线,自己定义 */
+//        String boundary = "xx--------------------------------------------------------------xx";
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("cmd","100");
+//            jsonObject.put("account",zhanghao);
+//            jsonObject.put("password",jiami);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        RequestBody body = new FormBody.Builder()
+//                .add("grant_type","password")
+//                .add("username","13488888888")
+//                .add("password","123")
+//                .build();
+        Request.Builder requestBuilder = null;
+
+        requestBuilder = new Request.Builder()
+                // .post(body)
+                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                .get()
+                .url(dengLuBean.getZhuji() + "/api/guages/url/"+id+"/"+guageid);
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                //dismissDialog();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });}
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss+" ddd");
+
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                  final String sss= jsonObject.get("data").getAsString();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            lRecyclerView.setVisibility(View.GONE);
+                            webView.setVisibility(View.VISIBLE);
+                            webView.loadUrl(sss);
                         }
                     });
 

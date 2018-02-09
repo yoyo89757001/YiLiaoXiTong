@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.xiaojun.yiliaoxitong.R;
+import com.xiaojun.yiliaoxitong.beans.LiangBiaoBean;
+
 import java.util.List;
 
 /**
@@ -18,10 +20,10 @@ import java.util.List;
 
 
 public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.ViewHolder> {
-    private List<String> datas;
+    private List<LiangBiaoBean.DataBean.GuagesBean.RowsBean> datas;
     private Context context=null;
 
-    public LiangBiaoAdapter(List<String> datas, Context context) {
+    public LiangBiaoAdapter(List<LiangBiaoBean.DataBean.GuagesBean.RowsBean> datas, Context context) {
         this.datas = datas;
         this.context=context;
 
@@ -42,7 +44,7 @@ public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.View
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         //判断是否显示字母标题
 
-        viewHolder.mingcheng.setText(datas.get(position));
+        viewHolder.mingcheng.setText(datas.get(position).getInventory_name());
         if (position%2==1){
             viewHolder.top_bg.setBackgroundResource(R.color.huise3);
         }else {

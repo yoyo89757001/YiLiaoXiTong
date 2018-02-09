@@ -66,7 +66,7 @@ public class LogingActivity extends Activity {
         dengLuBeanDao=MyApplication.getAppContext().getDaoSession().getDengLuBeanDao();
         dengLuBean=dengLuBeanDao.load(123456L);
 
-        link_xinzengSB();
+        //link_xinzengSB();
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         dw=dm.widthPixels;

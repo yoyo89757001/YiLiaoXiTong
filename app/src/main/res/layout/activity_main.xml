@@ -1134,6 +1134,17 @@
                         android:id="@+id/recyclerview"
                         android:layout_height="0dp"/>
 
+                    <WebView
+                        android:id="@+id/web"
+                        android:layout_weight="8"
+                        android:background="#F5F5F9"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="1dp"
+                        android:layout_height="0dp">
+
+                    </WebView>
+
                 </LinearLayout>
 
 

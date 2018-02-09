@@ -36,13 +36,13 @@
     <application
         android:allowBackup="true"
         android:name=".MyApplication"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/lolo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logo"
+        android:roundIcon="@drawable/lolo"
         android:screenOrientation="landscape"
         android:supportsRtl="true">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.LogingActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,11 +51,11 @@
             </intent-filter>
         </activity>
 
-        <!--<activity-->
-            <!--android:name=".ui.MainActivity"-->
-            <!--android:configChanges="keyboardHidden|orientation"-->
-            <!--android:windowSoftInputMode="stateHidden"-->
-            <!--android:theme="@style/Theme.AppCompat.NoActionBar" />-->
+        <activity
+            android:name=".ui.MainActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <activity
             android:name=".ui.SheZhiActivity"
