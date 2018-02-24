@@ -2,15 +2,15 @@ package com.xiaojun.yiliaoxitong.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.xiaojun.yiliaoxitong.R;
-import com.xiaojun.yiliaoxitong.beans.LiangBiaoBean;
+import com.xiaojun.yiliaoxitong.beans.DeFenBean;
+
 
 import java.util.List;
 
@@ -19,11 +19,11 @@ import java.util.List;
  */
 
 
-public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.ViewHolder> {
-    private List<LiangBiaoBean.DataBean.GuagesBean.RowsBean> datas;
+public class DeFenAdapter extends RecyclerView.Adapter<DeFenAdapter.ViewHolder> {
+    private List<DeFenBean.DataBean.RowsBean> datas;
     private Context context=null;
 
-    public LiangBiaoAdapter(List<LiangBiaoBean.DataBean.GuagesBean.RowsBean> datas, Context context) {
+    public DeFenAdapter(List<DeFenBean.DataBean.RowsBean> datas, Context context) {
         this.datas = datas;
         this.context=context;
 
@@ -44,9 +44,9 @@ public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.View
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         //判断是否显示字母标题
 
-        viewHolder.mingcheng.setText(datas.get(position).getInventory_name());
+        viewHolder.mingcheng.setText(datas.get(position).getReport_name());
         viewHolder.bianhao.setText(datas.get(position).getId()+"");
-        viewHolder.shijian.setText(datas.get(position).getCreate_time());
+        viewHolder.shijian.setText(datas.get(position).getStart_time());
         if (position%2==1){
             viewHolder.top_bg.setBackgroundResource(R.color.huise3);
         }else {

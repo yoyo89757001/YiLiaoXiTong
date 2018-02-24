@@ -182,8 +182,20 @@ public class LogingActivity extends Activity {
                     dengLuBean.setPassword(mima.getText().toString().trim());
                     dengLuBean.setZhuzhiyisheng(zhuzhiyisheng.getText().toString().trim());
                     dengLuBeanDao.update(dengLuBean);
-                    finish();
-                    startActivity(new Intent(LogingActivity.this,MainActivity.class));
+                    if ( zhaoPianBean.getAccess_token()!=null){
+                        finish();
+                        startActivity(new Intent(LogingActivity.this,MainActivity.class));
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tanchuang.setVisibility(View.GONE);
+                                denglu.setText("账号或密码错误");
+                                denglu.setEnabled(true);
+                            }
+                        });
+                    }
+
                 }catch (Exception e){
                     runOnUiThread(new Runnable() {
                         @Override

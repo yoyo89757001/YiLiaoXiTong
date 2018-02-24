@@ -10,11 +10,13 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
@@ -22,15 +24,20 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
@@ -43,9 +50,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.xiaojun.yiliaoxitong.MyApplication;
 import com.xiaojun.yiliaoxitong.R;
+import com.xiaojun.yiliaoxitong.adapters.DeFenAdapter;
 import com.xiaojun.yiliaoxitong.adapters.LiangBiaoAdapter;
 import com.xiaojun.yiliaoxitong.adapters.PopupWindowAdapter;
 import com.xiaojun.yiliaoxitong.adapters.YiShengAdapter;
+import com.xiaojun.yiliaoxitong.beans.DeFenBean;
 import com.xiaojun.yiliaoxitong.beans.DengLuBean;
 import com.xiaojun.yiliaoxitong.beans.DengLuBeanDao;
 import com.xiaojun.yiliaoxitong.beans.GeRenXinXi;
@@ -59,6 +68,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -74,26 +84,32 @@ import okhttp3.ResponseBody;
 public class MainActivity extends Activity implements View.OnClickListener {
     private int dw, dh;
     private int qingQiuYe=1;
+    private int qingQiuYe2=1;
     private WindowManager wm;
+    private String datestrold;
+    private String datestr;
     private LayoutInflater mInflater = null;
     private View view = null;
     private TextView t1, t2, t3, t4, t5;
     private ImageView im1, im2, im3, im4, im5, datouxiang,tanchuang2,tuichu,im11,im22,im33,im44,im55;
     private LinearLayout l1, l2, l3, l4, l5, ll1, ll2, ll3, ll4, ll5;
-    private EditText xingming, xingbie, mingzu, chushengriqi, zhiye, zhuceyouxiang, wenhuachengdu, paihang,
-            hunyingzhuangkuang, mima1, mima2, mima3, liangbiaosousuo, yisheng_sousuo;
-    private TextView haoma, xiongdijiemei, beishixuexing, beishiliexing, beishilaiyuan, fabingnianling, zongjiaoxingyang, fenchuangnianling, fuqingxueli, muqingxueli, yangyuzhe;
+    private EditText xingming, xingbie, mingzu, zhiye, zhuceyouxiang, wenhuachengdu, paihang,
+            hunyingzhuangkuang, mima1, mima2, mima3, liangbiaosousuo, yisheng_sousuo,defensousuo;
+    private TextView chushengriqi,haoma, xiongdijiemei, beishixuexing, beishiliexing, beishilaiyuan, fabingnianling, zongjiaoxingyang, fenchuangnianling, fuqingxueli, muqingxueli, yangyuzhe;
     private Button baocun, fanhui_ys, xiugaimima,a5,a6;
     private TextView xingming_ys, xingbie_ys, mingzu_ys, chushengriqi_ys, zhiyeyiyuan, keshi, zhicheng, mengzhengdidian, lingchuangshanchang;
-    private PopupWindow popupWindow = null;
+    private PopupWindow popupWindow = null,popupWindow_rq = null;
     private List<String> stringList = new ArrayList<>();
     private PopupWindowAdapter adapterss;
-    private LRecyclerView lRecyclerView, lRecyclerView_ys;
+    private LRecyclerView lRecyclerView, lRecyclerView_ys,lRecyclerView_df;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
     private LRecyclerViewAdapter lRecyclerViewAdapter_ys;
+    private LRecyclerViewAdapter lRecyclerViewAdapter_df;
     private List<LiangBiaoBean.DataBean.GuagesBean.RowsBean> dataList = new ArrayList<>();
+    private List<DeFenBean.DataBean.RowsBean> deFendataList = new ArrayList<>();
     private List<YiShengBeans.DataBean.RowsBean> dataList_ys = new ArrayList<>();
     private LiangBiaoAdapter taiZhangAdapter;
+    private DeFenAdapter deFenAdapter;
     private YiShengAdapter yiShengAdapter;
     private DengLuBeanDao dengLuBeanDao = null;
     private DengLuBean dengLuBean = null;
@@ -101,7 +117,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ScrollView scrollView_ys;
     private String case_number = null;
     private RelativeLayout tanchuang1;
-    private WebView webView;
+    private WebView webView,webView2;
+    DatePicker  datePicker;
+    TimePicker  timePicker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +156,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         wmParams.height = dh;
 
         webView= (WebView) view.findViewById(R.id.web);
+        webView2= (WebView) view.findViewById(R.id.web2);
+
         WebSettings webSettings = webView.getSettings();
+        WebSettings webSettings2 = webView2.getSettings();
         //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
         webSettings.setJavaScriptEnabled(true);
         // 若加载的 html 里有JS 在执行动画等操作，会造成资源浪费（CPU、电量）
@@ -172,6 +193,37 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
 
+        webSettings2.setJavaScriptEnabled(true);
+        // 若加载的 html 里有JS 在执行动画等操作，会造成资源浪费（CPU、电量）
+        // 在 onStop 和 onResume 里分别把 setJavaScriptEnabled() 给设置成 false 和 true 即可
+        //支持插件
+        // webSettings.setPluginsEnabled(true);
+        //设置自适应屏幕，两者合用
+        webSettings2.setUseWideViewPort(true); //将图片调整到适合webview的大小
+        webSettings2.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
+        //缩放操作
+        webSettings2.setSupportZoom(true); //支持缩放，默认为true。是下面那个的前提。
+        webSettings2.setBuiltInZoomControls(true); //设置内置的缩放控件。若为false，则该WebView不可缩放
+        webSettings2.setDisplayZoomControls(false); //隐藏原生的缩放控件
+        webSettings2.setAppCacheEnabled(true);
+        //设置 缓存模式
+        webSettings2.setCacheMode(WebSettings.LOAD_DEFAULT);
+        // 开启 DOM storage API 功能
+        webSettings2.setDomStorageEnabled(true);
+        //其他细节操作
+        //  webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); //关闭webview中缓存
+        webSettings2.setAllowFileAccess(true); //设置可以访问文件
+        webSettings2.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
+        webSettings2.setLoadsImagesAutomatically(true); //支持自动加载图片
+        webSettings2.setDefaultTextEncodingName("utf-8");//设置编码格式
+        webView2.setWebViewClient(new WebViewClient() {
+            //覆盖shouldOverrideUrlLoading 方法
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
 
         t1 = (TextView) view.findViewById(R.id.t1);
         t2 = (TextView) view.findViewById(R.id.t2);
@@ -225,7 +277,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         xingming = (EditText) view.findViewById(R.id.xingming);
         xingbie = (EditText) view.findViewById(R.id.xingbie);
         mingzu = (EditText) view.findViewById(R.id.mingzu);
-        chushengriqi = (EditText) view.findViewById(R.id.chushengriqi);
+        chushengriqi = (TextView) view.findViewById(R.id.chushengriqi);
+        chushengriqi.setOnClickListener(this);
         zhiye = (EditText) view.findViewById(R.id.zhiye);
         zhuceyouxiang = (EditText) view.findViewById(R.id.zhuceyouxiang);
         wenhuachengdu = (EditText) view.findViewById(R.id.wenhuachengdu);
@@ -278,6 +331,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         stringList.add("5");
 
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerview);
+        lRecyclerView_df = (LRecyclerView) view.findViewById(R.id.recyclerview2);
         lRecyclerView_ys = (LRecyclerView) view.findViewById(R.id.recyclerview_ys);
 
         taiZhangAdapter = new LiangBiaoAdapter(dataList, MainActivity.this);
@@ -310,6 +364,38 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         });
 
+        //得分报告的
+        deFenAdapter = new DeFenAdapter(deFendataList, MainActivity.this);
+        lRecyclerViewAdapter_df = new LRecyclerViewAdapter(deFenAdapter);
+        lRecyclerView_df.setLayoutManager(new WrapContentLinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+        lRecyclerView_df.setAdapter(lRecyclerViewAdapter_df);
+        //设置头部加载颜色
+        lRecyclerView_df.setHeaderViewColor(R.color.colorAccent, R.color.blake, android.R.color.white);
+        lRecyclerView_df.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
+        lRecyclerView_df.setFooterViewColor(R.color.textcolor, R.color.blake, android.R.color.white);
+        //设置底部加载文字提示
+        lRecyclerView_df.setFooterViewHint("拼命加载中", "--------我是有底线的--------", "网络不给力...");
+        lRecyclerView_df.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        lRecyclerView_df.setPullRefreshEnabled(false);
+        lRecyclerView_df.setLoadMoreEnabled(true);
+        lRecyclerViewAdapter_df.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                lRecyclerView_df.setVisibility(View.GONE);
+                webView2.setVisibility(View.VISIBLE);
+                webView2.loadUrl(deFendataList.get(position).getReport_url());
+
+            }
+        });
+        lRecyclerView_df.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                qingQiuYe2++;
+                //加载更多
+                link_liangbiao_list2(qingQiuYe2,20);
+
+            }
+        });
 
         //医生的
         yiShengAdapter = new YiShengAdapter(dataList_ys, MainActivity.this, dengLuBean.getZhuji());
@@ -390,6 +476,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 t4.setTextColor(Color.parseColor("#008AFF"));
                 setViewGoen();
                 ll4.setVisibility(View.VISIBLE);
+                link_liangbiao_list2(1,20);
+                lRecyclerView_df.setVisibility(View.VISIBLE);
+                webView2.setVisibility(View.GONE);
                 break;
             case R.id.l5:
                 chongzhi();
@@ -484,10 +573,172 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.yangyuzhexueli:
 
                 break;
+            case R.id.chushengriqi:
+                View contentView2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.riqi, null);
+
+                  datePicker= (DatePicker) contentView2.findViewById(R.id.date_picker);
+                  timePicker= (TimePicker) contentView2.findViewById(R.id.time_picker);
+                  Button quxiao= (Button) contentView2.findViewById(R.id.repair_date_sel_cancel);
+                  quxiao.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+                          back(true,popupWindow_rq);
+
+                      }
+                  });
+                Button queding= (Button) contentView2.findViewById(R.id.repair_date_sel_ok);
+                queding.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        back(false,popupWindow_rq);
+
+                    }
+                });
+                datePicker.setCalendarViewShown(false);
+                timePicker.setIs24HourView(true);
+                resizePikcer(datePicker);// 调整datepicker大小
+                resizePikcer(timePicker);// 调整timepicker大小
+                String str = getIntent().getStringExtra("date");
+                if (TextUtils.isEmpty(str)) {
+
+                    datestrold = "";
+                    datestr = "";
+                } else {
+                    datestr = str;
+                    datestrold = str;
+                }
+
+                popupWindow_rq = new PopupWindow(contentView2, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                popupWindow_rq.setFocusable(true);//获取焦点
+                popupWindow_rq.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow_rq.setTouchable(true);//能够响应触摸事件
+                popupWindow_rq.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow_rq.showAsDropDown(chushengriqi, 0, 0);
+                break;
 
 
         }
 
+
+    }
+
+    /**
+     * 调整FrameLayout大小
+     *
+     * @param tp
+     */
+    private void resizePikcer(FrameLayout tp) {
+        List<NumberPicker> npList = findNumberPicker(tp);
+        for (NumberPicker np : npList) {
+            resizeNumberPicker(np);
+        }
+    }
+
+    /*
+     * 调整numberpicker大小
+     */
+    private void resizeNumberPicker(NumberPicker np) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dip2px(this, 55),
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(dip2px(this, 5), 0, dip2px(this, 5), 0);
+        np.setLayoutParams(params);
+
+    }
+    public  int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    /**
+     * 得到viewGroup里面的numberpicker组件
+     *
+     * @param viewGroup
+     * @return
+     */
+    private List<NumberPicker> findNumberPicker(ViewGroup viewGroup) {
+        List<NumberPicker> npList = new ArrayList<NumberPicker>();
+        View child = null;
+        if (null != viewGroup) {
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                child = viewGroup.getChildAt(i);
+                if (child instanceof NumberPicker) {
+                    npList.add((NumberPicker) child);
+                } else if (child instanceof LinearLayout) {
+                    List<NumberPicker> result = findNumberPicker((ViewGroup) child);
+                    if (result.size() > 0) {
+                        return result;
+                    }
+                }
+            }
+        }
+        return npList;
+    }
+
+
+
+    /**
+     * 关闭调用 old为true则不变，false则改变
+     *
+     * @param
+     */
+    private void back(boolean old,PopupWindow popupWindow) {
+        // 获取时间选择
+        Intent intent = new Intent();
+        if (old) {
+            popupWindow.dismiss();
+        } else {
+            datestr = getData();
+            //	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            try {
+//				Date date = sdf.parse(datestr);
+//				if (!compare(date))
+//					return;
+                chushengriqi.setText(datestr.substring(0,10));
+               popupWindow.dismiss();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+
+
+
+    private String getData() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            StringBuilder str = new StringBuilder().append(datePicker.getYear()).append("-")
+                    .append((datePicker.getMonth() + 1) < 10 ? "0" + (datePicker.getMonth() + 1)
+                            : (datePicker.getMonth() + 1))
+                    .append("-")
+                    .append((datePicker.getDayOfMonth() < 10) ? "0" + datePicker.getDayOfMonth()
+                            : datePicker.getDayOfMonth())
+                    .append(" ")
+                    .append((timePicker.getHour() < 10) ? "0" + timePicker.getHour()
+                            : timePicker.getHour())
+                    .append(":").append((timePicker.getMinute() < 10) ? "0" + timePicker.getMinute()
+                            : timePicker.getMinute());
+
+            return str.toString();
+        }else {
+
+            StringBuilder str = new StringBuilder().append(datePicker.getYear()).append("-")
+                    .append((datePicker.getMonth() + 1) < 10 ? "0" + (datePicker.getMonth() + 1)
+                            : (datePicker.getMonth() + 1))
+                    .append("-")
+                    .append((datePicker.getDayOfMonth() < 10) ? "0" + datePicker.getDayOfMonth()
+                            : datePicker.getDayOfMonth())
+                    .append(" ")
+                    .append((timePicker.getCurrentHour() < 10) ? "0" + timePicker.getCurrentHour()
+                            : timePicker.getCurrentHour())
+                    .append(":").append((timePicker.getCurrentMinute() < 10) ? "0" + timePicker.getCurrentMinute()
+                            : timePicker.getCurrentMinute());
+
+            return str.toString();
+
+        }
 
     }
 
@@ -616,29 +867,30 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            xingming.setText(zhaoPianBean.getData().getReal_name());
-                            xingbie.setText(zhaoPianBean.getData().getGender());
-                            mingzu.setText(zhaoPianBean.getData().getNation());
-                            chushengriqi.setText(zhaoPianBean.getData().getBirthday().substring(0, 10));
-                            zhiye.setText(zhaoPianBean.getData().getVocation());
-                            zhuceyouxiang.setText(zhaoPianBean.getData().getEmail());
-                            wenhuachengdu.setText(zhaoPianBean.getData().getEducation());
-                            xiongdijiemei.setText(zhaoPianBean.getData().getSiblings() + "");
-                            paihang.setText(zhaoPianBean.getData().getRaking() + "");
-                            hunyingzhuangkuang.setText(zhaoPianBean.getData().getMarital_status());
-                            beishixuexing.setText(zhaoPianBean.getData().getBlood_type());
-                            beishiliexing.setText(zhaoPianBean.getData().getType());
-                            beishilaiyuan.setText(zhaoPianBean.getData().getSource());
-                            fabingnianling.setText(zhaoPianBean.getData().getAge_of_onset() + "");
-                            zongjiaoxingyang.setText(zhaoPianBean.getData().getReligion());
-                            fenchuangnianling.setText(zhaoPianBean.getData().getSeparate_beds_age() + "");
-                            fuqingxueli.setText(zhaoPianBean.getData().getFather_education());
-                            muqingxueli.setText(zhaoPianBean.getData().getMonther_education());
-                            yangyuzhe.setText(zhaoPianBean.getData().getPrimary_rear_education());
-                            id = zhaoPianBean.getData().getId();
-                            case_number = zhaoPianBean.getData().getCase_number();
+                            if (zhaoPianBean.getData()!=null) {
+                                xingming.setText(zhaoPianBean.getData().getReal_name()==null?"":zhaoPianBean.getData().getReal_name());
+                                xingbie.setText(zhaoPianBean.getData().getGender()==null?"":zhaoPianBean.getData().getGender());
+                                mingzu.setText(zhaoPianBean.getData().getNation()==null?"":zhaoPianBean.getData().getNation());
+                                chushengriqi.setText(zhaoPianBean.getData().getBirthday()==null?"":zhaoPianBean.getData().getBirthday().substring(0, 10));
+                                zhiye.setText(zhaoPianBean.getData().getVocation()==null?"":zhaoPianBean.getData().getVocation());
+                                zhuceyouxiang.setText(zhaoPianBean.getData().getEmail()==null?"":zhaoPianBean.getData().getEmail());
+                                wenhuachengdu.setText(zhaoPianBean.getData().getEducation()==null?"":zhaoPianBean.getData().getEducation());
+                                xiongdijiemei.setText(zhaoPianBean.getData().getSiblings() + ""==null?"":zhaoPianBean.getData().getSiblings() + "");
+                                paihang.setText(zhaoPianBean.getData().getRaking() + ""==null?"":zhaoPianBean.getData().getRaking() + "");
+                                hunyingzhuangkuang.setText(zhaoPianBean.getData().getMarital_status()==null?"":zhaoPianBean.getData().getMarital_status());
+                                beishixuexing.setText(zhaoPianBean.getData().getBlood_type()==null?"":zhaoPianBean.getData().getBlood_type());
+                                beishiliexing.setText(zhaoPianBean.getData().getType()==null?"":zhaoPianBean.getData().getType());
+                                beishilaiyuan.setText(zhaoPianBean.getData().getSource()==null?"":zhaoPianBean.getData().getSource());
+                                fabingnianling.setText(zhaoPianBean.getData().getAge_of_onset() + ""==null?"":zhaoPianBean.getData().getAge_of_onset() + "");
+                                zongjiaoxingyang.setText(zhaoPianBean.getData().getReligion()==null?"":zhaoPianBean.getData().getReligion());
+                                fenchuangnianling.setText(zhaoPianBean.getData().getSeparate_beds_age() + ""==null?"":zhaoPianBean.getData().getSeparate_beds_age() + "");
+                                fuqingxueli.setText(zhaoPianBean.getData().getFather_education()==null?"":zhaoPianBean.getData().getFather_education());
+                                muqingxueli.setText(zhaoPianBean.getData().getMonther_education()==null?"":zhaoPianBean.getData().getMonther_education());
+                                yangyuzhe.setText(zhaoPianBean.getData().getPrimary_rear_education()==null?"":zhaoPianBean.getData().getPrimary_rear_education());
+                                id = zhaoPianBean.getData().getId();
+                                case_number = zhaoPianBean.getData().getCase_number();
 
-
+                            }
                         }
                     });
 
@@ -874,7 +1126,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     // .post(body)
                     .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
                     .get()
-                    .url(dengLuBean.getZhuji() + "/api/guages/join?" + "PageIndex=" + pageIndex + "&" + "pageSize=" + pageSize+"&UserId="+id);
+                    .url(dengLuBean.getZhuji() + "/api/guages/join?" + "PageIndex=" + pageIndex + "&" + "PageSize=" + pageSize+"&UserId="+id);
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
@@ -953,6 +1205,128 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         });
 
                 }
+
+                } catch (Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+
+                        }
+                    });
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
+
+    private void link_liangbiao_list2(int pageIndex, int pageSize) {
+        // showDialog();
+        //  final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+
+//    /* form的分割线,自己定义 */
+//        String boundary = "xx--------------------------------------------------------------xx";
+//        JSONObject jsonObject = new JSONObject();
+//        try {
+//            jsonObject.put("cmd","100");
+//            jsonObject.put("account",zhanghao);
+//            jsonObject.put("password",jiami);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        RequestBody body = new FormBody.Builder()
+//                .add("grant_type","password")
+//                .add("username","13488888888")
+//                .add("password","123")
+//                .build();
+        Request.Builder requestBuilder = null;
+
+            requestBuilder = new Request.Builder()
+                    // .post(body)
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    .get()
+                    .url(dengLuBean.getZhuji() + "/api/guages/personalreport?" +"userid="+id+"&PageIndex=" + pageIndex + "&" + "PageSize=" + pageSize);
+
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                //dismissDialog();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (deFendataList.size()!=0){
+                            deFendataList.clear();
+                        }
+                        lRecyclerView_df.refreshComplete(20);// REQUEST_COUNT为每页加载数量
+                        deFenAdapter.notifyDataSetChanged();
+                    }
+                });}
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss);
+
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    final DeFenBean zhaoPianBean = gson.fromJson(jsonObject, DeFenBean.class);
+                    if (qingQiuYe2==1){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (deFendataList.size()!=0){
+                                    deFendataList.clear();
+                                }
+                                deFendataList.addAll(zhaoPianBean.getData()!=null?zhaoPianBean.getData().getRows():new ArrayList<DeFenBean.DataBean.RowsBean>());
+
+                                lRecyclerView_df.refreshComplete(deFendataList.size());// REQUEST_COUNT为每页加载数量
+                                deFenAdapter.notifyDataSetChanged();
+                                //  Log.d("Fragment1", "dataList.size():" + dataList.size());
+                            }
+                        });
+
+
+                    }else {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                int size=zhaoPianBean.getData().getRows().size();
+                                for (int i=0;i<size;i++){
+                                    deFendataList.add(zhaoPianBean.getData().getRows().get(i));
+                                }
+
+                                lRecyclerView_df.refreshComplete(20);// REQUEST_COUNT为每页加载数量
+                                deFenAdapter.notifyDataSetChanged();
+                                //  Log.d("Fragment1", "dataList.size():" + dataList.size());
+                            }
+                        });
+                    }
+
+
+                    if (zhaoPianBean.getData().getRows().size()==0 && deFendataList.size()>=20){
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lRecyclerView_df.setNoMore(true);
+                            }
+                        });
+
+                    }
 
                 } catch (Exception e) {
                     runOnUiThread(new Runnable() {
