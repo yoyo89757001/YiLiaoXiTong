@@ -97,6 +97,15 @@ public class LiangBiaoBean {
                 private String guage_id;
                 private String inventory_name;
                 private String create_time;
+                private int status;
+
+                public int getStatus() {
+                    return status;
+                }
+
+                public void setStatus(int status) {
+                    this.status = status;
+                }
 
                 public int getId() {
                     return id;

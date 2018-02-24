@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
@@ -37,8 +36,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
-
 
 import com.bumptech.glide.Glide;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
@@ -68,7 +65,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -93,13 +89,25 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private TextView t1, t2, t3, t4, t5;
     private ImageView im1, im2, im3, im4, im5, datouxiang,tanchuang2,tuichu,im11,im22,im33,im44,im55;
     private LinearLayout l1, l2, l3, l4, l5, ll1, ll2, ll3, ll4, ll5;
-    private EditText xingming, xingbie, mingzu, zhiye, zhuceyouxiang, wenhuachengdu, paihang,
-            hunyingzhuangkuang, mima1, mima2, mima3, liangbiaosousuo, yisheng_sousuo,defensousuo;
-    private TextView chushengriqi,haoma, xiongdijiemei, beishixuexing, beishiliexing, beishilaiyuan, fabingnianling, zongjiaoxingyang, fenchuangnianling, fuqingxueli, muqingxueli, yangyuzhe;
+    private EditText xingming, xingbie, zhiye, zhuceyouxiang, paihang,
+             mima1, mima2, mima3, liangbiaosousuo, yisheng_sousuo,defensousuo;
+    private TextView zhuzhi,wenhuachengdu,hunyingzhuangkuang,mingzu,chushengriqi,haoma, xiongdijiemei, beishixuexing, beishiliexing, beishilaiyuan, fabingnianling, zongjiaoxingyang, fenchuangnianling, fuqingxueli, muqingxueli, yangyuzhe;
     private Button baocun, fanhui_ys, xiugaimima,a5,a6;
     private TextView xingming_ys, xingbie_ys, mingzu_ys, chushengriqi_ys, zhiyeyiyuan, keshi, zhicheng, mengzhengdidian, lingchuangshanchang;
     private PopupWindow popupWindow = null,popupWindow_rq = null;
     private List<String> stringList = new ArrayList<>();
+    private List<String> stringList_xuexing = new ArrayList<>();
+    private List<String> stringList_leixing = new ArrayList<>();
+    private List<String> stringList_laiyuan = new ArrayList<>();
+    private List<String> stringList_fbnianling = new ArrayList<>();
+    private List<String> stringList_zongjiao = new ArrayList<>();
+    private List<String> stringList_fqxueli = new ArrayList<>();
+    private List<String> stringList_mqxueli = new ArrayList<>();
+    private List<String> stringList_fenchuang = new ArrayList<>();
+    private List<String> stringList_yangyuzhe = new ArrayList<>();
+    private List<String> stringList_hunying = new ArrayList<>();
+    private List<String> stringList_wenhua = new ArrayList<>();
+    private List<String> stringList_mingzu = new ArrayList<>();
     private PopupWindowAdapter adapterss;
     private LRecyclerView lRecyclerView, lRecyclerView_ys,lRecyclerView_df;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
@@ -276,14 +284,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
         time2.setText(DateUtils.time(System.currentTimeMillis() + ""));
         xingming = (EditText) view.findViewById(R.id.xingming);
         xingbie = (EditText) view.findViewById(R.id.xingbie);
-        mingzu = (EditText) view.findViewById(R.id.mingzu);
+        mingzu = (TextView) view.findViewById(R.id.mingzu);
+        mingzu.setOnClickListener(this);
         chushengriqi = (TextView) view.findViewById(R.id.chushengriqi);
         chushengriqi.setOnClickListener(this);
         zhiye = (EditText) view.findViewById(R.id.zhiye);
         zhuceyouxiang = (EditText) view.findViewById(R.id.zhuceyouxiang);
-        wenhuachengdu = (EditText) view.findViewById(R.id.wenhuachengdu);
+        wenhuachengdu = (TextView) view.findViewById(R.id.wenhuachengdu);
+        zhuzhi = (TextView) view.findViewById(R.id.zhuzhiyisheng);
+        wenhuachengdu.setOnClickListener(this);
         paihang = (EditText) view.findViewById(R.id.paihang);
-        hunyingzhuangkuang = (EditText) view.findViewById(R.id.hunyingzhuangkuang);
+        hunyingzhuangkuang = (TextView) view.findViewById(R.id.hunyingzhuangkuang);
+        hunyingzhuangkuang.setOnClickListener(this);
         xiongdijiemei = (TextView) view.findViewById(R.id.xiongdijiemei);
         xiongdijiemei.setOnClickListener(this);
         beishixuexing = (TextView) view.findViewById(R.id.beishixuexing);
@@ -330,6 +342,88 @@ public class MainActivity extends Activity implements View.OnClickListener {
         stringList.add("4");
         stringList.add("5");
 
+        stringList_xuexing.add("O型");
+        stringList_xuexing.add("A型");
+        stringList_xuexing.add("B型");
+        stringList_xuexing.add("AB型");
+        stringList_xuexing.add("未知");
+        stringList_xuexing.add("不知道");
+
+        stringList_leixing.add("正常被试");
+        stringList_leixing.add("精神心里患者");
+
+        stringList_laiyuan.add("正常人检查");
+        stringList_laiyuan.add("综合医院");
+        stringList_laiyuan.add("精神专科医院");
+        stringList_laiyuan.add("心理咨询机构");
+
+        for (int i=1;i<=100;i++){
+            stringList_fbnianling.add(i+"");
+        }
+        for (int i=1;i<=20;i++){
+            stringList_fenchuang.add(i+"");
+        }
+        stringList_fenchuang.add("20岁以上");
+
+        stringList_zongjiao.add("无");
+        stringList_zongjiao.add("佛教");
+        stringList_zongjiao.add("基督教");
+        stringList_zongjiao.add("天主教");
+        stringList_zongjiao.add("伊斯兰教");
+        stringList_zongjiao.add("道教");
+        stringList_zongjiao.add("其它");
+
+        stringList_fqxueli.add("无");
+        stringList_fqxueli.add("小学");
+        stringList_fqxueli.add("初中");
+        stringList_fqxueli.add("高中");
+        stringList_fqxueli.add("中专");
+        stringList_fqxueli.add("大专");
+        stringList_fqxueli.add("本科");
+        stringList_fqxueli.add("硕士");
+        stringList_fqxueli.add("博士");
+        stringList_fqxueli.add("3岁前父亲去世或离异");
+
+        stringList_mqxueli.add("无");
+        stringList_mqxueli.add("小学");
+        stringList_mqxueli.add("初中");
+        stringList_mqxueli.add("高中");
+        stringList_mqxueli.add("中专");
+        stringList_mqxueli.add("大专");
+        stringList_mqxueli.add("本科");
+        stringList_mqxueli.add("硕士");
+        stringList_mqxueli.add("博士");
+        stringList_mqxueli.add("3岁前父亲去世或离异");
+
+        stringList_yangyuzhe.add("无");
+        stringList_yangyuzhe.add("小学");
+        stringList_yangyuzhe.add("初中");
+        stringList_yangyuzhe.add("高中");
+        stringList_yangyuzhe.add("中专");
+        stringList_yangyuzhe.add("大专");
+        stringList_yangyuzhe.add("本科");
+        stringList_yangyuzhe.add("硕士");
+        stringList_yangyuzhe.add("博士");
+        stringList_yangyuzhe.add("不清楚");
+
+        stringList_wenhua.add("无");
+        stringList_wenhua.add("小学");
+        stringList_wenhua.add("初中");
+        stringList_wenhua.add("高中");
+        stringList_wenhua.add("中专");
+        stringList_wenhua.add("大专");
+        stringList_wenhua.add("本科");
+        stringList_wenhua.add("硕士");
+        stringList_wenhua.add("博士");
+
+        stringList_mingzu.add("汉族");
+        stringList_mingzu.add("少数名族");
+
+        stringList_hunying.add("已婚");
+        stringList_hunying.add("未婚");
+        stringList_hunying.add("丧偶");
+        stringList_hunying.add("离异");
+
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerview);
         lRecyclerView_df = (LRecyclerView) view.findViewById(R.id.recyclerview2);
         lRecyclerView_ys = (LRecyclerView) view.findViewById(R.id.recyclerview_ys);
@@ -350,6 +444,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                if (dataList.get(position).getStatus()==0)
                 link_liangbiao_url(dataList.get(position).getGuage_id());
 
             }
@@ -534,7 +629,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
                         {
                             popupWindow.dismiss();
-                            popupWindow.setFocusable(false);
+
                         }
                     }
                 });
@@ -547,31 +642,292 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 popupWindow.showAsDropDown(xiongdijiemei, 0, 0);
                 break;
             case R.id.beishixuexing:
+                View contentView3 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView3 = (ListView) contentView3.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_xuexing);
+                listView3.setAdapter(adapterss);
+                listView3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        beishixuexing.setText(stringList_xuexing.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView3, 180, setListViewHeightBasedOnChildren(listView3));
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(beishixuexing, 0, 0);
                 break;
             case R.id.beishiliexing:
+                View contentView4 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView4 = (ListView) contentView4.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_leixing);
+                listView4.setAdapter(adapterss);
+                listView4.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        beishiliexing.setText(stringList_leixing.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView4, 180, setListViewHeightBasedOnChildren(listView4));
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(beishiliexing, 0, 0);
                 break;
             case R.id.beishilaiyuan:
+                View contentView5 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView5 = (ListView) contentView5.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_laiyuan);
+                listView5.setAdapter(adapterss);
+                listView5.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        beishilaiyuan.setText(stringList_laiyuan.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView5, 180, setListViewHeightBasedOnChildren(listView5));
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(beishilaiyuan, 0, 0);
                 break;
             case R.id.fabingnianling:
+                View contentView6 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView6 = (ListView) contentView6.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_fbnianling);
+                listView6.setAdapter(adapterss);
+                listView6.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        fabingnianling.setText(stringList_fbnianling.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView6, 180,320);
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(fabingnianling, 0, 0);
                 break;
             case R.id.zongjiaoxingyang:
+                View contentView7 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView7 = (ListView) contentView7.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_zongjiao);
+                listView7.setAdapter(adapterss);
+                listView7.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        zongjiaoxingyang.setText(stringList_zongjiao.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView7, 180, setListViewHeightBasedOnChildren(listView7));
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(zongjiaoxingyang, 0, 0);
                 break;
             case R.id.fenchuangnianlin:
+                View contentView8 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView8 = (ListView) contentView8.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_fenchuang);
+                listView8.setAdapter(adapterss);
+                listView8.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        fenchuangnianling.setText(stringList_fenchuang.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView8, 180, 320);
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(fenchuangnianling, 0, 0);
                 break;
             case R.id.fuqingxueli:
+                View contentView9 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView9 = (ListView) contentView9.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_fqxueli);
+                listView9.setAdapter(adapterss);
+                listView9.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        fuqingxueli.setText(stringList_fqxueli.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView9, 180, 320);
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(fuqingxueli, 0, 0);
                 break;
             case R.id.muqingxueli:
+                View contentView10 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView10 = (ListView) contentView10.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_mqxueli);
+                listView10.setAdapter(adapterss);
+                listView10.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        muqingxueli.setText(stringList_mqxueli.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView10, 180, 320);
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(muqingxueli, 0, 0);
                 break;
             case R.id.yangyuzhexueli:
+                View contentView11 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView11 = (ListView) contentView11.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_yangyuzhe);
+                listView11.setAdapter(adapterss);
+                listView11.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        yangyuzhe.setText(stringList_yangyuzhe.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
 
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView11, 180, 320);
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(yangyuzhe, 0, 0);
+                break;
+            case R.id.mingzu:
+                View contentView12 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView12 = (ListView) contentView12.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_mingzu);
+                listView12.setAdapter(adapterss);
+                listView12.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        mingzu.setText(stringList_mingzu.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
+
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView12, 180, setListViewHeightBasedOnChildren(listView12));
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(mingzu, 0, 0);
+                break;
+            case R.id.wenhuachengdu:
+                View contentView13 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView13 = (ListView) contentView13.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_wenhua);
+                listView13.setAdapter(adapterss);
+                listView13.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        wenhuachengdu.setText(stringList_wenhua.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
+
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView13, 180, 320);
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(wenhuachengdu, 0, 0);
+                break;
+            case R.id.hunyingzhuangkuang:
+                View contentView14 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                ListView listView14 = (ListView) contentView14.findViewById(R.id.dddddd);
+                adapterss = new PopupWindowAdapter(MainActivity.this, stringList_hunying);
+                listView14.setAdapter(adapterss);
+                listView14.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        hunyingzhuangkuang.setText(stringList_hunying.get(position));
+                        if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
+                        {
+                            popupWindow.dismiss();
+
+                        }
+                    }
+                });
+
+                popupWindow = new PopupWindow(contentView14, 180, setListViewHeightBasedOnChildren(listView14));
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(hunyingzhuangkuang, 0, 0);
                 break;
             case R.id.chushengriqi:
                 View contentView2 = LayoutInflater.from(MainActivity.this).inflate(R.layout.riqi, null);
@@ -887,6 +1243,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 fuqingxueli.setText(zhaoPianBean.getData().getFather_education()==null?"":zhaoPianBean.getData().getFather_education());
                                 muqingxueli.setText(zhaoPianBean.getData().getMonther_education()==null?"":zhaoPianBean.getData().getMonther_education());
                                 yangyuzhe.setText(zhaoPianBean.getData().getPrimary_rear_education()==null?"":zhaoPianBean.getData().getPrimary_rear_education());
+                                zhuzhi.setText(zhaoPianBean.getData().getDoctor()==null?"":zhaoPianBean.getData().getDoctor());
                                 id = zhaoPianBean.getData().getId();
                                 case_number = zhaoPianBean.getData().getCase_number();
 

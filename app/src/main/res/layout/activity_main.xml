@@ -215,7 +215,7 @@
                     android:textColor="@color/write"
                     android:textSize="18sp"
                     android:id="@+id/t4"
-                    android:text="得分报告"
+                    android:text="诊断报告"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
@@ -423,13 +423,14 @@
                                     android:layout_weight="1"
                                     android:layout_height="wrap_content" />
 
-                                <EditText
+                                <TextView
                                     android:textColor="@color/blake"
                                     android:textSize="18sp"
                                     android:paddingLeft="8dp"
                                     android:id="@+id/mingzu"
                                     android:gravity="center_vertical"
                                     android:paddingRight="8dp"
+                                    android:drawableRight="@drawable/lanjiantou"
                                     android:background="@drawable/zhongkong"
                                     android:layout_width="0dp"
                                     android:layout_weight="1.4"
@@ -552,13 +553,14 @@
                                     android:layout_weight="1"
                                     android:layout_height="wrap_content" />
 
-                                <EditText
+                                <TextView
                                     android:textColor="@color/blake"
                                     android:textSize="18sp"
                                     android:paddingLeft="8dp"
                                     android:id="@+id/wenhuachengdu"
                                     android:paddingRight="8dp"
                                     android:gravity="center_vertical"
+                                    android:drawableRight="@drawable/lanjiantou"
                                     android:background="@drawable/zhongkong"
                                     android:layout_width="0dp"
                                     android:layout_weight="1.4"
@@ -643,13 +645,14 @@
                                     android:layout_weight="1"
                                     android:layout_height="wrap_content" />
 
-                                <EditText
+                                <TextView
                                     android:textColor="@color/blake"
                                     android:textSize="18sp"
                                     android:paddingLeft="8dp"
                                     android:gravity="center_vertical"
                                     android:paddingRight="10dp"
                                     android:id="@+id/hunyingzhuangkuang"
+                                    android:drawableRight="@drawable/lanjiantou"
                                     android:background="@drawable/zhongkong"
                                     android:layout_width="0dp"
                                     android:layout_weight="1.4"
@@ -979,8 +982,7 @@
                                 <TextView
                                     android:textSize="18sp"
                                     android:textColor="@color/blake"
-                                    android:text="出生日期:"
-                                    android:visibility="invisible"
+                                    android:text="主治医生:"
                                     android:gravity="right"
                                     android:layout_marginRight="10dp"
                                     android:layout_width="0dp"
@@ -990,8 +992,9 @@
                                 <TextView
                                     android:textColor="@color/blake"
                                     android:textSize="18sp"
-                                    android:visibility="invisible"
                                     android:paddingLeft="8dp"
+                                    android:gravity="center_vertical"
+                                    android:id="@+id/zhuzhiyisheng"
                                     android:background="@drawable/zhongkong"
                                     android:layout_width="0dp"
                                     android:layout_weight="1.4"
@@ -1554,7 +1557,7 @@
                         android:textColor="@color/blake"
                         android:textSize="22sp"
                         android:layout_marginLeft="20dp"
-                        android:text="测试量表"
+                        android:text="诊断报告"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />

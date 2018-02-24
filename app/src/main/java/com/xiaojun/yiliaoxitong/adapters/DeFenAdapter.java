@@ -47,6 +47,7 @@ public class DeFenAdapter extends RecyclerView.Adapter<DeFenAdapter.ViewHolder> 
         viewHolder.mingcheng.setText(datas.get(position).getReport_name());
         viewHolder.bianhao.setText(datas.get(position).getId()+"");
         viewHolder.shijian.setText(datas.get(position).getStart_time());
+        viewHolder.caozuo.setText("得分报告");
         if (position%2==1){
             viewHolder.top_bg.setBackgroundResource(R.color.huise3);
         }else {

@@ -46,6 +46,12 @@ public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.View
 
         viewHolder.mingcheng.setText(datas.get(position).getInventory_name());
         viewHolder.bianhao.setText(datas.get(position).getId()+"");
+        if (datas.get(position).getStatus()==1){
+            viewHolder.caozuo.setText("已完成答题");
+        }else {
+            viewHolder.caozuo.setText("开始答题");
+        }
+
         viewHolder.shijian.setText(datas.get(position).getCreate_time());
         if (position%2==1){
             viewHolder.top_bg.setBackgroundResource(R.color.huise3);

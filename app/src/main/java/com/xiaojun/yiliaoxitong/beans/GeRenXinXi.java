@@ -86,7 +86,7 @@ public class GeRenXinXi {
         private String marital_status;
         private int age_of_onset;
         private String email;
-        private int doctor;
+        private String doctor;
         private String diagnosed;
         private String blood_type;
         private String type;
@@ -219,11 +219,11 @@ public class GeRenXinXi {
             this.email = email;
         }
 
-        public int getDoctor() {
+        public String getDoctor() {
             return doctor;
         }
 
-        public void setDoctor(int doctor) {
+        public void setDoctor(String doctor) {
             this.doctor = doctor;
         }
 

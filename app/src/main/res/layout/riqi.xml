@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="220dp"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal" >
+    android:gravity="center" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
@@ -26,7 +26,6 @@
                     android:id="@+id/repair_date_sel_cancel"
                     android:layout_width="80dp"
                     android:layout_height="40dp"
-                    android:layout_alignParentLeft="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/jiaohu3"
@@ -51,22 +50,23 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 >
                 <DatePicker
                     android:id="@+id/date_picker"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5">
+                    android:layout_width="wrap_content"
+                    android:theme="@style/android:Theme.Holo.Light.NoActionBar"
+                    android:layout_height="wrap_content">
                 </DatePicker>
 
                 <TimePicker
                     android:id="@+id/time_picker"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
                     android:visibility="gone"
                     />
 

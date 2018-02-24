@@ -3,7 +3,7 @@
 
 
     <solid
-      android:color="#f9c1bcbc"/><!-- 填充的颜色 -->
+      android:color="#ffffff"/><!-- 填充的颜色 -->
             <corners android:radius="6dp"/>
            
 
