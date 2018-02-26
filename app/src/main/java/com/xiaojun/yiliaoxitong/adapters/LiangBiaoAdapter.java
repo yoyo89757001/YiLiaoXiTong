@@ -48,6 +48,7 @@ public class LiangBiaoAdapter extends RecyclerView.Adapter<LiangBiaoAdapter.View
         viewHolder.bianhao.setText(datas.get(position).getId()+"");
         if (datas.get(position).getStatus()==1){
             viewHolder.caozuo.setText("已完成答题");
+           // Log.d("DengJiActivity", "DengJiActivity");
         }else {
             viewHolder.caozuo.setText("开始答题");
         }

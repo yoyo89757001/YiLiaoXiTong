@@ -98,6 +98,15 @@ public class GeRenXinXi {
         private String monther_education;
         private String primary_rear_education;
         private String create_date;
+        private String doctor_real_name;
+
+        public String getDoctor_real_name() {
+            return doctor_real_name;
+        }
+
+        public void setDoctor_real_name(String doctor_real_name) {
+            this.doctor_real_name = doctor_real_name;
+        }
 
         public int getId() {
             return id;

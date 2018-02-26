@@ -92,7 +92,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private EditText xingming, xingbie, zhiye, zhuceyouxiang, paihang,
              mima1, mima2, mima3, liangbiaosousuo, yisheng_sousuo,defensousuo;
     private TextView zhuzhi,wenhuachengdu,hunyingzhuangkuang,mingzu,chushengriqi,haoma, xiongdijiemei, beishixuexing, beishiliexing, beishilaiyuan, fabingnianling, zongjiaoxingyang, fenchuangnianling, fuqingxueli, muqingxueli, yangyuzhe;
-    private Button baocun, fanhui_ys, xiugaimima,a5,a6;
+    private Button baocun, fanhui_ys, xiugaimima,a5,a6,lbchaxun,dfchaxun,yschaxun;
     private TextView xingming_ys, xingbie_ys, mingzu_ys, chushengriqi_ys, zhiyeyiyuan, keshi, zhicheng, mengzhengdidian, lingchuangshanchang;
     private PopupWindow popupWindow = null,popupWindow_rq = null;
     private List<String> stringList = new ArrayList<>();
@@ -238,6 +238,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         t3 = (TextView) view.findViewById(R.id.t3);
         t4 = (TextView) view.findViewById(R.id.t4);
         t5 = (TextView) view.findViewById(R.id.t5);
+        lbchaxun= (Button) view.findViewById(R.id.chaxun);
+        dfchaxun= (Button) view.findViewById(R.id.chaxun2);
         l1 = (LinearLayout) view.findViewById(R.id.l1);
         l1.setOnClickListener(this);
         l2 = (LinearLayout) view.findViewById(R.id.l2);
@@ -276,7 +278,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         mima1 = (EditText) view.findViewById(R.id.mima1);
         mima2 = (EditText) view.findViewById(R.id.mima2);
         mima3 = (EditText) view.findViewById(R.id.mima3);
-
+        defensousuo= (EditText) view.findViewById(R.id.defensuosuo);
         datouxiang = (ImageView) view.findViewById(R.id.datouxiang);
         TextView time = (TextView) view.findViewById(R.id.time);
         TextView time2 = (TextView) view.findViewById(R.id.time2);
@@ -334,7 +336,26 @@ public class MainActivity extends Activity implements View.OnClickListener {
         scrollView_ys = (ScrollView) view.findViewById(R.id.scrollView2);
         liangbiaosousuo = (EditText) view.findViewById(R.id.liangbiaosuosuo);
         yisheng_sousuo = (EditText) view.findViewById(R.id.yisheng_sousuo);
+        yschaxun= (Button) view.findViewById(R.id.chaxun_yisheng);
+        yschaxun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                link_ys_list(1, 10, yisheng_sousuo.getText().toString().trim());
 
+            }
+        });
+        lbchaxun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                link_liangbiao_list(1,20,liangbiaosousuo.getText().toString().trim());
+            }
+        });
+        dfchaxun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                link_liangbiao_list2(1,20,defensousuo.getText().toString().trim());
+            }
+        });
 
         stringList.add("1");
         stringList.add("2");
@@ -454,7 +475,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void onLoadMore() {
                 qingQiuYe++;
                 //加载更多
-                link_liangbiao_list(qingQiuYe,20);
+                link_liangbiao_list(qingQiuYe,20,null);
 
             }
         });
@@ -487,7 +508,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             public void onLoadMore() {
                 qingQiuYe2++;
                 //加载更多
-                link_liangbiao_list2(qingQiuYe2,20);
+                link_liangbiao_list2(qingQiuYe2,20,null);
 
             }
         });
@@ -540,7 +561,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.l2:
                 chongzhi();
-
                 l2.setBackgroundResource(R.color.write);
                 im2.setBackgroundResource(R.drawable.lanjiantou);
                 im22.setBackgroundResource(R.drawable.liangbiao);
@@ -549,7 +569,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 ll2.setVisibility(View.VISIBLE);
                 HideKeyboard(liangbiaosousuo);
                 if (id!=-2)
-                link_liangbiao_list(1,20);
+                link_liangbiao_list(1,20,null);
                 lRecyclerView.setVisibility(View.VISIBLE);
                 webView.setVisibility(View.GONE);
                 break;
@@ -560,6 +580,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 im33.setBackgroundResource(R.drawable.yisheng);
                 t3.setTextColor(Color.parseColor("#008AFF"));
                 setViewGoen();
+                link_ys_list(1, 10, null);
+
                 ll3.setVisibility(View.VISIBLE);
                 HideKeyboard(yisheng_sousuo);
                 break;
@@ -571,7 +593,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 t4.setTextColor(Color.parseColor("#008AFF"));
                 setViewGoen();
                 ll4.setVisibility(View.VISIBLE);
-                link_liangbiao_list2(1,20);
+                link_liangbiao_list2(1,20,null);
                 lRecyclerView_df.setVisibility(View.VISIBLE);
                 webView2.setVisibility(View.GONE);
                 break;
@@ -1243,7 +1265,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 fuqingxueli.setText(zhaoPianBean.getData().getFather_education()==null?"":zhaoPianBean.getData().getFather_education());
                                 muqingxueli.setText(zhaoPianBean.getData().getMonther_education()==null?"":zhaoPianBean.getData().getMonther_education());
                                 yangyuzhe.setText(zhaoPianBean.getData().getPrimary_rear_education()==null?"":zhaoPianBean.getData().getPrimary_rear_education());
-                                zhuzhi.setText(zhaoPianBean.getData().getDoctor()==null?"":zhaoPianBean.getData().getDoctor());
+                                zhuzhi.setText(zhaoPianBean.getData().getDoctor_real_name()==null?"":zhaoPianBean.getData().getDoctor_real_name());
                                 id = zhaoPianBean.getData().getId();
                                 case_number = zhaoPianBean.getData().getCase_number();
 
@@ -1390,11 +1412,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //                .build();
         Request.Builder requestBuilder = null;
         if (userName != null) {
+            Log.d("DengJiActivity", userName);
+
             requestBuilder = new Request.Builder()
                     // .post(body)
                     .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
                     .get()
-                    .url(dengLuBean.getZhuji() + "/api/doctors?" + "PageIndex=" + pageIndex + "&" + "pageSize=" + pageSize + "&" + "UserName=" + userName);
+                    .url(dengLuBean.getZhuji() + "/api/doctors?" + "PageIndex=" + pageIndex + "&" + "pageSize=" + pageSize + "&" + "username=" + userName);
         } else {
             requestBuilder = new Request.Builder()
                     // .post(body)
@@ -1434,6 +1458,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if (dataList_ys.size()>0)
+                                dataList_ys.clear();
                             if (zhaoPianBean != null && zhaoPianBean.getData() != null && zhaoPianBean.getData().getRows() != null)
                                 dataList_ys.addAll(zhaoPianBean.getData().getRows());
                             yiShengAdapter.notifyDataSetChanged();
@@ -1457,7 +1483,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    private void link_liangbiao_list(int pageIndex, int pageSize) {
+    private void link_liangbiao_list(int pageIndex, int pageSize,String name) {
         // showDialog();
         //  final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
@@ -1478,13 +1504,20 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //                .add("password","123")
 //                .build();
         Request.Builder requestBuilder = null;
+            if (name==null) {
+                requestBuilder = new Request.Builder()
+                        // .post(body)
+                        .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                        .get()
+                        .url(dengLuBean.getZhuji() + "/api/guages/join?" + "PageIndex=" + pageIndex + "&" + "PageSize=" + pageSize + "&UserId=" + id);
+            }else {
 
-            requestBuilder = new Request.Builder()
-                    // .post(body)
-                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
-                    .get()
-                    .url(dengLuBean.getZhuji() + "/api/guages/join?" + "PageIndex=" + pageIndex + "&" + "PageSize=" + pageSize+"&UserId="+id);
-
+                requestBuilder = new Request.Builder()
+                        // .post(body)
+                        .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                        .get()
+                        .url(dengLuBean.getZhuji() + "/api/guages/join?" + "PageIndex=" + pageIndex + "&" + "PageSize=" + pageSize + "&UserId=" + id + "&GuageName=" + name);
+            }
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
         //step 4: 开始异步请求
@@ -1529,6 +1562,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                                 lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
                                 taiZhangAdapter.notifyDataSetChanged();
+
                                 //  Log.d("Fragment1", "dataList.size():" + dataList.size());
                             }
                         });
@@ -1578,7 +1612,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    private void link_liangbiao_list2(int pageIndex, int pageSize) {
+    private void link_liangbiao_list2(int pageIndex, int pageSize,String name) {
         // showDialog();
         //  final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
@@ -1599,12 +1633,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //                .add("password","123")
 //                .build();
         Request.Builder requestBuilder = null;
-
+        if (name==null){
             requestBuilder = new Request.Builder()
                     // .post(body)
                     .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
                     .get()
                     .url(dengLuBean.getZhuji() + "/api/guages/personalreport?" +"userid="+id+"&PageIndex=" + pageIndex + "&" + "PageSize=" + pageSize);
+
+        }else {
+            requestBuilder = new Request.Builder()
+                    // .post(body)
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    .get()
+                    .url(dengLuBean.getZhuji() + "/api/guages/personalreport?" +"userid="+id+"&PageIndex=" + pageIndex + "&" + "PageSize=" + pageSize+"&GuageName="+name);
+
+        }
 
 
         // step 3：创建 Call 对象
