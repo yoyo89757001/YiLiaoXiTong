@@ -128,6 +128,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private WebView webView,webView2;
     DatePicker  datePicker;
     TimePicker  timePicker;
+    private String idid="0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -340,7 +341,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         yschaxun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                link_ys_list(1, 10, yisheng_sousuo.getText().toString().trim());
+                link_ys_list(1, 500, yisheng_sousuo.getText().toString().trim());
 
             }
         });
@@ -541,7 +542,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         wm.addView(view, wmParams);
 
         link_info();
-        link_ys_list(1, 10, null);
+        link_ys_list(1, 500, null);
 
     }
 
@@ -556,6 +557,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 im11.setBackgroundResource(R.drawable.gerenxinxi);
                 t1.setTextColor(Color.parseColor("#008AFF"));
                 baocun.setText("保 存");
+                link_info();
                 setViewGoen();
                 ll1.setVisibility(View.VISIBLE);
                 break;
@@ -580,7 +582,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 im33.setBackgroundResource(R.drawable.yisheng);
                 t3.setTextColor(Color.parseColor("#008AFF"));
                 setViewGoen();
-                link_ys_list(1, 10, null);
+                link_ys_list(1, 500, null);
 
                 ll3.setVisibility(View.VISIBLE);
                 HideKeyboard(yisheng_sousuo);
@@ -1267,6 +1269,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 yangyuzhe.setText(zhaoPianBean.getData().getPrimary_rear_education()==null?"":zhaoPianBean.getData().getPrimary_rear_education());
                                 zhuzhi.setText(zhaoPianBean.getData().getDoctor_real_name()==null?"":zhaoPianBean.getData().getDoctor_real_name());
                                 id = zhaoPianBean.getData().getId();
+                                idid=zhaoPianBean.getData().getDoctor();
                                 case_number = zhaoPianBean.getData().getCase_number();
 
                             }
@@ -1314,7 +1317,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             jsonObject.put("marital_status", hunyingzhuangkuang.getText().toString().trim());
             jsonObject.put("age_of_onset", fabingnianling.getText().toString().trim());
             jsonObject.put("email", zhuceyouxiang.getText().toString().trim());
-            jsonObject.put("doctor", dengLuBean.getZhuzhiyisheng());
+            jsonObject.put("doctor", idid);
             // jsonObject.put("diagnosed","");
             jsonObject.put("blood_type", beishixuexing.getText().toString().trim());
             jsonObject.put("type", beishiliexing.getText().toString().trim());
@@ -1483,7 +1486,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    private void link_liangbiao_list(int pageIndex, int pageSize,String name) {
+    private void link_liangbiao_list(final int pageIndex, int pageSize, String name) {
         // showDialog();
         //  final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
@@ -1531,7 +1534,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         @Override
                         public void run() {
 
-                            if (dataList.size()!=0){
+                            if (dataList.size()>0){
                                 dataList.clear();
                             }
                              lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
@@ -1551,11 +1554,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                     Gson gson = new Gson();
                     final LiangBiaoBean zhaoPianBean = gson.fromJson(jsonObject, LiangBiaoBean.class);
-                    if (qingQiuYe==1){
+                    if (pageIndex==1){
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (dataList.size()!=0){
+                                if (dataList.size()>0){
                                     dataList.clear();
                                 }
                                 dataList.addAll(zhaoPianBean.getData().getGuages().getRows()!=null?zhaoPianBean.getData().getGuages().getRows():new ArrayList<LiangBiaoBean.DataBean.GuagesBean.RowsBean>());
@@ -1612,7 +1615,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     }
 
-    private void link_liangbiao_list2(int pageIndex, int pageSize,String name) {
+    private void link_liangbiao_list2(final int pageIndex, int pageSize, String name) {
         // showDialog();
         //  final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
@@ -1683,7 +1686,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                     Gson gson = new Gson();
                     final DeFenBean zhaoPianBean = gson.fromJson(jsonObject, DeFenBean.class);
-                    if (qingQiuYe2==1){
+                    if (pageIndex==1){
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
