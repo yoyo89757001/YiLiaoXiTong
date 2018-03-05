@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/write"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+   <TextView
+       android:textColor="@color/blake"
+       android:gravity="center"
+       android:id="@+id/ff"
+       android:textSize="20sp"
+       android:text="请输入管理员密码退出本程序"
+       android:layout_width="match_parent"
+       android:layout_marginTop="20dp"
+       android:layout_height="wrap_content" />
+
+        <EditText
+            android:layout_below="@+id/ff"
+            android:layout_width="match_parent"
+            android:minHeight="50dp"
+            android:textSize="16sp"
+            android:textColor="@color/blake"
+            android:layout_margin="16dp"
+            android:id="@+id/ggg"
+            android:paddingLeft="8dp"
+            android:gravity="left|center_vertical"
+            android:background="@drawable/zhongkong"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_below="@+id/ggg"
+            android:text="密码不正确!"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:id="@+id/mm"
+            android:visibility="gone"
+            android:textColor="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="0dp"
+                android:background="@drawable/jiaohu3"
+                android:textSize="18sp"
+                android:textColor="@color/write"
+                android:text="取消"
+                android:layout_marginRight="30dp"
+                android:id="@+id/quxiao"
+                android:layout_weight="1"
+                android:layout_height="50dp" />
+
+            <Button
+                android:layout_width="0dp"
+                android:background="@drawable/jiaohu3"
+                android:textSize="18sp"
+                android:textColor="@color/write"
+                android:text="确定"
+                android:layout_marginLeft="30dp"
+                android:id="@+id/queding"
+                android:layout_weight="1"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+
+</RelativeLayout>

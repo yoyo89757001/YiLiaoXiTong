@@ -7,22 +7,28 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.xiaojun.yiliaoxitong.MyApplication;
 import com.xiaojun.yiliaoxitong.R;
+import com.xiaojun.yiliaoxitong.adapters.PopupWindowAdapter;
 import com.xiaojun.yiliaoxitong.adapters.TiJIaoDialog;
 import com.xiaojun.yiliaoxitong.beans.DengLuBean;
 import com.xiaojun.yiliaoxitong.beans.DengLuBeanDao;
@@ -57,12 +63,16 @@ public class LogingActivity extends Activity {
     private RelativeLayout tanchuang;
     private Button denglu;
     private EditText zhanghao,mima,zhuzhiyisheng;
-    private ImageView shezhi;
+    private ImageView shezhi,tuichu;
+    private PopupWindow popupWindow = null;
+    private View view2;
 
     @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("LogingActivity", "创建111");
+
         dengLuBeanDao=MyApplication.getAppContext().getDaoSession().getDengLuBeanDao();
         dengLuBean=dengLuBeanDao.load(123456L);
 
@@ -91,7 +101,7 @@ public class LogingActivity extends Activity {
         mima= (EditText) view.findViewById(R.id.mima);
         shezhi= (ImageView) view.findViewById(R.id.shezhi);
         zhuzhiyisheng= (EditText) view.findViewById(R.id.zhuzhiyisheng);
-
+        view2=view.findViewById(R.id.vvv);
         tanchuang= (RelativeLayout) view.findViewById(R.id.tanchuang);
          denglu= (Button) view.findViewById(R.id.denglu);
         denglu.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +121,48 @@ public class LogingActivity extends Activity {
                 startActivity(new Intent(LogingActivity.this,SheZhiActivity.class));
             }
         });
+        tuichu= (ImageView) view.findViewById(R.id.tuichu2);
+        tuichu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                View contentView = LayoutInflater.from(LogingActivity.this).inflate(R.layout.tuichu_item, null);
+                final EditText editText= (EditText) contentView.findViewById(R.id.ggg);
+                final TextView textView= (TextView) contentView.findViewById(R.id.mm);
+                Button b1= (Button)contentView. findViewById(R.id.quxiao);
+                b1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                    }
+                });
+                Button b2= (Button) contentView.findViewById(R.id.queding);
+                b2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (editText.getText().toString().trim().equals("123456789")){
+                            popupWindow.dismiss();
+
+                            wm.removeViewImmediate(view);
+                            finish();
+
+                        }else {
+                            textView.setVisibility(View.VISIBLE );
+                        }
+
+                    }
+                });
+
+
+                popupWindow = new PopupWindow(contentView, 250, 260);
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(view2, -125, -130);
+
+            }
+        });
 
         wm.addView(view, wmParams);
 
@@ -174,7 +225,7 @@ public class LogingActivity extends Activity {
                    String ss = body.string().trim();
                     Log.d("DengJiActivity", ss);
 
-                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    final JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                     Gson gson = new Gson();
                     TokensBean zhaoPianBean = gson.fromJson(jsonObject, TokensBean.class);
                     dengLuBean.setToken(zhaoPianBean.getAccess_token());
@@ -190,7 +241,7 @@ public class LogingActivity extends Activity {
                             @Override
                             public void run() {
                                 tanchuang.setVisibility(View.GONE);
-                                denglu.setText("账号或密码错误");
+                                denglu.setText(jsonObject.get("error_description").getAsString());
                                 denglu.setEnabled(true);
                             }
                         });
