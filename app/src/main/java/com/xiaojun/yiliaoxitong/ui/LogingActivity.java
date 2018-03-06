@@ -2,13 +2,18 @@ package com.xiaojun.yiliaoxitong.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
+import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,10 +33,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.xiaojun.yiliaoxitong.MyApplication;
 import com.xiaojun.yiliaoxitong.R;
-import com.xiaojun.yiliaoxitong.adapters.PopupWindowAdapter;
 import com.xiaojun.yiliaoxitong.adapters.TiJIaoDialog;
 import com.xiaojun.yiliaoxitong.beans.DengLuBean;
 import com.xiaojun.yiliaoxitong.beans.DengLuBeanDao;
+import com.xiaojun.yiliaoxitong.beans.MiMaBean;
+import com.xiaojun.yiliaoxitong.beans.SheBeiBean;
 import com.xiaojun.yiliaoxitong.beans.TokensBean;
 import com.xiaojun.yiliaoxitong.utils.GsonUtil;
 import com.xiaojun.yiliaoxitong.utils.Utils;
@@ -40,7 +46,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.Key;
+import java.util.Timer;
+import java.util.TimerTask;
 
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -66,13 +80,31 @@ public class LogingActivity extends Activity {
     private ImageView shezhi,tuichu;
     private PopupWindow popupWindow = null;
     private View view2;
+    private int ty=0;
+    private final Timer timer = new Timer();
+    private TimerTask task;
+
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // 要做的事情
+            link_gengxinSB(Utils.getUniqueId(LogingActivity.this));
+            link_zhuangtai();
+
+
+          //  Log.d("LogingActivity", decode("abc123!@", "STB9dTF3+v58PC36NRrrBmaLc054WiqZ".getBytes())+"ggg");
+            super.handleMessage(msg);
+        }
+    };
+
 
     @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("LogingActivity", "创建111");
-
+        ty=getIntent().getIntExtra("typpp",0);
         dengLuBeanDao=MyApplication.getAppContext().getDaoSession().getDengLuBeanDao();
         dengLuBean=dengLuBeanDao.load(123456L);
 
@@ -112,7 +144,7 @@ public class LogingActivity extends Activity {
             //    wm.removeView(view);
             //    finish();
                 denglu.setEnabled(false);
-                link_save();
+                link_save(null,null);
             }
         });
         shezhi.setOnClickListener(new View.OnClickListener() {
@@ -166,11 +198,25 @@ public class LogingActivity extends Activity {
 
         wm.addView(view, wmParams);
 
+
+
+        task = new TimerTask() {
+            @Override
+            public void run() {
+
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+        };
+
+        timer.schedule(task, 1000, 5000);
     }
 
 
 
-    private void link_save() {
+
+    private void link_save(String username,String password) {
        // showDialog();
         final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
@@ -186,12 +232,23 @@ public class LogingActivity extends Activity {
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-            RequestBody body = new FormBody.Builder()
-                .add("grant_type","password")
-                .add("username",zhanghao.getText().toString().trim())
-                .add("password",mima.getText().toString().trim())
-                .add("client_id",Utils.getUniqueId(LogingActivity.this))
-                .build();
+        RequestBody body=null;
+        if (username!=null && password!=null){
+             body = new FormBody.Builder()
+                    .add("grant_type","password")
+                    .add("username",username)
+                    .add("password",password)
+                    .add("client_id",Utils.getUniqueId(LogingActivity.this))
+                    .build();
+        }else {
+             body = new FormBody.Builder()
+                    .add("grant_type","password")
+                    .add("username",zhanghao.getText().toString().trim())
+                    .add("password",mima.getText().toString().trim())
+                    .add("client_id",Utils.getUniqueId(LogingActivity.this))
+                    .build();
+        }
+
 
          Request.Builder requestBuilder = new Request.Builder()
                  .post(body)
@@ -234,6 +291,7 @@ public class LogingActivity extends Activity {
                     dengLuBean.setZhuzhiyisheng(zhuzhiyisheng.getText().toString().trim());
                     dengLuBeanDao.update(dengLuBean);
                     if ( zhaoPianBean.getAccess_token()!=null){
+                        timer.cancel();
                         finish();
                         startActivity(new Intent(LogingActivity.this,MainActivity.class));
                     }else {
@@ -264,36 +322,18 @@ public class LogingActivity extends Activity {
 
     }
 
-    private void link_xinzengSB() {
+    private void link_gengxinSB(String serialnumber) {
         // showDialog();
         final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
         //  Log.d("MainActivity", Utils.getUniqueId(MainActivity.this));
 //    /* form的分割线,自己定义 */
-//        String boundary = "xx--------------------------------------------------------------xx";
-        JSONObject jsonObject = new JSONObject();
-
-            // Log.d("MainActivity", getIMEI(MainActivity.this)+"");
-            try {
-                jsonObject.put("serial_number", Utils.getUniqueId(LogingActivity.this));
-                jsonObject.put("terminal_name", "");
-                jsonObject.put("ip_address", "");
-                jsonObject.put("server_ip_address", "");
-                jsonObject.put("status", 3);
-                //  jsonObject.put("create_date",DateUtils.tim33(System.currentTimeMillis()+""));
-            } catch (JSONException e) {
-                e.printStackTrace();
-
-        }
-
-
-        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
-
+      //  Log.d("LogingActivity", serialnumber);
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
-                .post(body)
-                // .get()
-                .url(dengLuBean.getZhuji() + "/api/terminals");
+               // .post(body)
+                 .get()
+                .url(dengLuBean.getZhuji() + "/api/notify/"+serialnumber);
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
@@ -303,16 +343,58 @@ public class LogingActivity extends Activity {
             public void onFailure(Call call, IOException e) {
                 Log.d("AllConnects", "请求识别失败" + e.getMessage());
                 //dismissDialog();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        dengLuBean.setZhongduanmingcheng("");
-                        dengLuBean.setZhuzhiyisheng("");
-                        dengLuBeanDao.update(dengLuBean);
-                        dengLuBean=dengLuBeanDao.load(123456L);
-                    }
-                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                //   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                        Log.d("DengJiActivity", ss+"[]");
+
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    SheBeiBean zhaoPianBean = gson.fromJson(jsonObject, SheBeiBean.class);
+                    if (zhaoPianBean.getError_code()==0){
+                        if (zhaoPianBean.getData().getAction().equals("绑定"))
+                        link_getmima(zhaoPianBean.getData().getId());
+                      }
+
+                } catch (Exception e) {
+
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
+
+    private void link_getmima(int id) {
+        // showDialog();
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+        //  Log.d("MainActivity", Utils.getUniqueId(MainActivity.this));
+//    /* form的分割线,自己定义 */
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                // .post(body)
+                .get()
+                .url(dengLuBean.getZhuji() + "/api/memberships/info/"+id);
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                //dismissDialog();
+
             }
 
             @Override
@@ -326,19 +408,13 @@ public class LogingActivity extends Activity {
                     Log.d("DengJiActivity", ss+"[]");
 
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
-                    if (jsonObject.get("error_code").getAsInt() == 0) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
+                    Gson gson = new Gson();
+                    MiMaBean zhaoPianBean = gson.fromJson(jsonObject, MiMaBean.class);
+                    if (zhaoPianBean.getError_code()==0){
+                        link_save(zhaoPianBean.getData().getUsername(),zhaoPianBean.getData().getPassword());
 
+                        timer.cancel();
 
-                                dengLuBean.setZhongduanmingcheng("");
-                                dengLuBean.setZhuzhiyisheng("");
-                                dengLuBeanDao.update(dengLuBean);
-                                dengLuBean=dengLuBeanDao.load(123456L);
-
-                            }
-                        });
                     }
 
                 } catch (Exception e) {
@@ -351,5 +427,99 @@ public class LogingActivity extends Activity {
     }
 
 
+    private void link_zhuangtai() {
+        // showDialog();
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+        //  Log.d("MainActivity", Utils.getUniqueId(MainActivity.this));
+//    /* form的分割线,自己定义 */
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("Status", 3);
+            jsonObject.put("SerialNumber", Utils.getUniqueId(LogingActivity.this));
+            // jsonObject.put("create_date",DateUtils.tim33(System.currentTimeMillis()+""));
+            //  Log.d("MainActivity", mima33.getText().toString().trim());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
 
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                .post(body)
+               // .get()
+                .url(dengLuBean.getZhuji() + "/api/terminals/updatestatus");
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                //dismissDialog();
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                //   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss+"[]");
+
+//                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+//                    Gson gson = new Gson();
+//                    MiMaBean zhaoPianBean = gson.fromJson(jsonObject, MiMaBean.class);
+//                    if (zhaoPianBean.getError_code()==0){
+//                        link_save(zhaoPianBean.getData().getUsername(),zhaoPianBean.getData().getPassword());
+//
+//                        timer.cancel();
+//                    }
+
+                } catch (Exception e) {
+
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
+
+
+    private final static String HEX = "0123456789ABCDEF";
+    private final static String TRANSFORMATION = "DES/CBC/PKCS5Padding";//DES是加密方式 CBC是工作模式 PKCS5Padding是填充模式
+    private final static String IVPARAMETERSPEC = "01020304";////初始化向量参数，AES 为16bytes. DES 为8bytes.
+    private final static String ALGORITHM = "DES";//DES是加密方式
+    private static final String SHA1PRNG = "SHA1PRNG";//// SHA1PRNG 强随机种子算法, 要区别4.2以上版本的调用方法
+    /**
+     * DES算法，解密
+     *
+     * @param data 待解密字符串
+     * @param key  解密私钥，长度不能够小于8位
+     * @return 解密后的字节数组
+     */
+    public static String decode(String key, byte[] data) {
+        try {
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+            IvParameterSpec iv = new IvParameterSpec(IVPARAMETERSPEC.getBytes());
+            cipher.init(Cipher.DECRYPT_MODE, getRawKey(key), iv);
+            byte[] original = cipher.doFinal(data);
+            String originalString = new String(original);
+            return originalString;
+        } catch (Exception e) {
+            Log.d("LogingActivity", e.getMessage()+"v");
+            return null;
+        }
+    }
+
+    // 对密钥进行处理
+    private static Key getRawKey(String key) throws Exception {
+        DESKeySpec dks = new DESKeySpec(key.getBytes());
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ALGORITHM);
+        return keyFactory.generateSecret(dks);
+    }
 }

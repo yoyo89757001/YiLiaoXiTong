@@ -1,14 +1,19 @@
 package com.xiaojun.yiliaoxitong.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
+import android.os.BatteryManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -60,12 +65,16 @@ import com.xiaojun.yiliaoxitong.beans.YiShengBeans;
 import com.xiaojun.yiliaoxitong.beans.YiShengInFoBean;
 import com.xiaojun.yiliaoxitong.utils.DateUtils;
 import com.xiaojun.yiliaoxitong.utils.GsonUtil;
+import com.xiaojun.yiliaoxitong.utils.Utils;
 import com.xiaojun.yiliaoxitong.views.WrapContentLinearLayoutManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -129,6 +138,43 @@ public class MainActivity extends Activity implements View.OnClickListener {
     DatePicker  datePicker;
     TimePicker  timePicker;
     private String idid="0";
+    private final Timer timer = new Timer();
+    private TimerTask task;
+    private int dl=11;
+
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            // 要做的事情
+            if (dl<10){
+                link_zhuangtai(2);
+            }else {
+                link_zhuangtai(1);
+            }
+
+            //  Log.d("LogingActivity", decode("abc123!@", "STB9dTF3+v58PC36NRrrBmaLc054WiqZ".getBytes())+"ggg");
+            super.handleMessage(msg);
+        }
+    };
+
+
+    /**
+     * 监听获取手机系统剩余电量
+     * Created by Lx on 2016/9/17.
+     */
+    public class BatteryReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int current = intent.getExtras().getInt("level");// 获得当前电量
+            int total = intent.getExtras().getInt("scale");// 获得总电量
+            int percent = current * 100 / total;
+            dl=percent;
+            Log.d("BatteryReceiver", "percent:" + percent);
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +209,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         ;
         wmParams.width = dw;
         wmParams.height = dh;
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        BatteryReceiver  receiver = new BatteryReceiver();
+        registerReceiver(receiver, filter);
 
         webView= (WebView) view.findViewById(R.id.web);
         webView2= (WebView) view.findViewById(R.id.web2);
@@ -544,6 +594,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         link_info();
         link_ys_list(1, 500, null);
 
+        task = new TimerTask() {
+            @Override
+            public void run() {
+
+                Message message = new Message();
+                message.what = 1;
+                handler.sendMessage(message);
+            }
+        };
+        timer.schedule(task, 3000, 6000);
     }
 
 
@@ -2014,7 +2074,67 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
 
+    private void link_zhuangtai(int iii) {
+        // showDialog();
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+        //  Log.d("MainActivity", Utils.getUniqueId(MainActivity.this));
+//    /* form的分割线,自己定义 */
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("Status", iii);
+            jsonObject.put("SerialNumber", Utils.getUniqueId(MainActivity.this));
+            // jsonObject.put("create_date",DateUtils.tim33(System.currentTimeMillis()+""));
+            //  Log.d("MainActivity", mima33.getText().toString().trim());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
 
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                .post(body)
+                // .get()
+                .url(dengLuBean.getZhuji() + "/api/terminals/updatestatus");
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                //dismissDialog();
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                //   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss+"[]");
+
+//                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+//                    Gson gson = new Gson();
+//                    MiMaBean zhaoPianBean = gson.fromJson(jsonObject, MiMaBean.class);
+//                    if (zhaoPianBean.getError_code()==0){
+//                        link_save(zhaoPianBean.getData().getUsername(),zhaoPianBean.getData().getPassword());
+//
+//                        timer.cancel();
+//                    }
+
+                } catch (Exception e) {
+
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
 
 
 }
