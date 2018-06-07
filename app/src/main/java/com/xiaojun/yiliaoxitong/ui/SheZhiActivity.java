@@ -3,7 +3,6 @@ package com.xiaojun.yiliaoxitong.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
@@ -36,7 +35,6 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -70,7 +68,7 @@ public class SheZhiActivity extends Activity implements View.OnClickListener {
         dh=dm.heightPixels;
         //设置横屏
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
         }
         wm=(WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         WindowManager.LayoutParams wmParams = new WindowManager.LayoutParams();
@@ -79,7 +77,7 @@ public class SheZhiActivity extends Activity implements View.OnClickListener {
         view = mInflater.inflate(R.layout.activity_shezhi, null);
         wmParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
         wmParams.format = PixelFormat.OPAQUE;
-        wmParams.screenOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        wmParams.screenOrientation=ActivityInfo.SCREEN_ORIENTATION_USER;
         wmParams.flags=WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;;
         wmParams.width=dw;
@@ -178,15 +176,27 @@ public class SheZhiActivity extends Activity implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
+        Request.Builder requestBuilder=null;
+        try {
+            RequestBody body = RequestBody.create(JSON, jsonObject.toString());
 
+             requestBuilder = new Request.Builder()
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    .post(body)
+                    // .get()
+                    .url(mima33.getText().toString().trim()+ "/api/terminals");
+        }catch (Exception e){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    xiugaiip.setText("地址格式不正确");
+                }
+            });
 
-        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+            Log.d("SheZhiActivity", e.getMessage()+"");
+            return;
+        }
 
-        Request.Builder requestBuilder = new Request.Builder()
-                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
-                .post(body)
-                // .get()
-                .url(dengLuBean.getZhuji() + "/api/terminals");
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
@@ -274,12 +284,26 @@ public class SheZhiActivity extends Activity implements View.OnClickListener {
 
 
         //    RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+        Request.Builder requestBuilder=null;
+        try {
 
-        Request.Builder requestBuilder = new Request.Builder()
-                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
-                //  .post(body)
-                .get()
-                .url(dengLuBean.getZhuji() + "/api/terminals/" + id);
+             requestBuilder = new Request.Builder()
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    //  .post(body)
+                    .get()
+                    .url(mima33.getText().toString().trim() + "/api/terminals/" + id);
+
+        }catch (Exception e){
+            Log.d("SheZhiActivity", e.getMessage()+"");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    xiugaiip.setText("地址格式不正确");
+                }
+            });
+            return;
+        }
+
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());

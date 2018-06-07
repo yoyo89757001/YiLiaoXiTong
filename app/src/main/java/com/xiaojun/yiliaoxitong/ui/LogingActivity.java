@@ -2,15 +2,12 @@ package com.xiaojun.yiliaoxitong.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,11 +16,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -80,9 +75,9 @@ public class LogingActivity extends Activity {
     private ImageView shezhi,tuichu;
     private PopupWindow popupWindow = null;
     private View view2;
-    private int ty=0;
     private final Timer timer = new Timer();
     private TimerTask task;
+
 
 
     Handler handler = new Handler() {
@@ -103,8 +98,7 @@ public class LogingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("LogingActivity", "创建111");
-        ty=getIntent().getIntExtra("typpp",0);
+
         dengLuBeanDao=MyApplication.getAppContext().getDaoSession().getDengLuBeanDao();
         dengLuBean=dengLuBeanDao.load(123456L);
 
@@ -115,7 +109,7 @@ public class LogingActivity extends Activity {
         dh=dm.heightPixels;
         //设置横屏
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
         }
         wm=(WindowManager)getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         WindowManager.LayoutParams wmParams = new WindowManager.LayoutParams();
@@ -124,7 +118,7 @@ public class LogingActivity extends Activity {
         view = mInflater.inflate(R.layout.activity_loging, null);
         wmParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
         wmParams.format = PixelFormat.OPAQUE;
-        wmParams.screenOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        wmParams.screenOrientation=ActivityInfo.SCREEN_ORIENTATION_USER;
         wmParams.flags=WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;;
         wmParams.width=dw;
@@ -211,12 +205,13 @@ public class LogingActivity extends Activity {
         };
 
         timer.schedule(task, 1000, 5000);
+
     }
 
 
 
 
-    private void link_save(String username,String password) {
+    private void link_save(final String username, final String password) {
        // showDialog();
         final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
@@ -248,11 +243,15 @@ public class LogingActivity extends Activity {
                     .add("client_id",Utils.getUniqueId(LogingActivity.this))
                     .build();
         }
-
-
-         Request.Builder requestBuilder = new Request.Builder()
-                 .post(body)
-                .url(dengLuBean.getZhuji() + "/pad/token");
+        Request.Builder requestBuilder=null;
+        try {
+             requestBuilder = new Request.Builder()
+                    .post(body)
+                    .url(dengLuBean.getZhuji() + "/pad/token");
+        }catch (Exception e){
+            Log.d("LogingActivity", e.getMessage()+"");
+            return;
+        }
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
@@ -280,20 +279,27 @@ public class LogingActivity extends Activity {
                 try {
                     ResponseBody body = response.body();
                    String ss = body.string().trim();
-                    Log.d("DengJiActivity", ss);
+                    Log.d("DengJiActivity", ss+"登录");
 
                     final JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                     Gson gson = new Gson();
                     TokensBean zhaoPianBean = gson.fromJson(jsonObject, TokensBean.class);
                     dengLuBean.setToken(zhaoPianBean.getAccess_token());
-                    dengLuBean.setUsername(zhanghao.getText().toString().trim());
-                    dengLuBean.setPassword(mima.getText().toString().trim());
+                    dengLuBean.setUsername(username!=null?username:zhanghao.getText().toString().trim());
+                    dengLuBean.setPassword(password!=null?password:mima.getText().toString().trim());
                     dengLuBean.setZhuzhiyisheng(zhuzhiyisheng.getText().toString().trim());
                     dengLuBeanDao.update(dengLuBean);
                     if ( zhaoPianBean.getAccess_token()!=null){
-                        timer.cancel();
-                        finish();
-                        startActivity(new Intent(LogingActivity.this,MainActivity.class));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                wm.removeViewImmediate(view);
+                                finish();
+                                startActivity(new Intent(LogingActivity.this,MainActivity.class));
+                            }
+                        });
+
                     }else {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -315,11 +321,18 @@ public class LogingActivity extends Activity {
                         }
                     });
                   //  dismissDialog();
-                    Log.d("WebsocketPushMsg", e.getMessage());
+                    Log.d("DengJiActivity", e.getMessage());
                 }
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        task.cancel();
+        timer.cancel();
+        super.onDestroy();
     }
 
     private void link_gengxinSB(String serialnumber) {
@@ -329,11 +342,18 @@ public class LogingActivity extends Activity {
         //  Log.d("MainActivity", Utils.getUniqueId(MainActivity.this));
 //    /* form的分割线,自己定义 */
       //  Log.d("LogingActivity", serialnumber);
-        Request.Builder requestBuilder = new Request.Builder()
-                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
-               // .post(body)
-                 .get()
-                .url(dengLuBean.getZhuji() + "/api/notify/"+serialnumber);
+        Request.Builder requestBuilder=null;
+        try {
+                 requestBuilder = new Request.Builder()
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    // .post(body)
+                    .get()
+                    .url(dengLuBean.getZhuji() + "/api/notify/"+serialnumber);
+        }catch (Exception e){
+            Log.d("LogingActivity", e.getMessage()+"k");
+            return;
+
+        }
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
@@ -354,14 +374,16 @@ public class LogingActivity extends Activity {
                 try {
                     ResponseBody body = response.body();
                     String ss = body.string().trim();
-                        Log.d("DengJiActivity", ss+"[]");
-
+                    Log.d("DengJiActivity", ss+"状态");
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Log.d("DengJiActivity", "状态222");
                     Gson gson = new Gson();
                     SheBeiBean zhaoPianBean = gson.fromJson(jsonObject, SheBeiBean.class);
+                    Log.d("DengJiActivity", "33333");
+                    Log.d("LogingActivity", zhaoPianBean.toString());
                     if (zhaoPianBean.getError_code()==0){
                         if (zhaoPianBean.getData().getAction().equals("绑定"))
-                        link_getmima(zhaoPianBean.getData().getId());
+                        link_getmima(zhaoPianBean.getData().getUser_id());
                       }
 
                 } catch (Exception e) {
@@ -374,6 +396,7 @@ public class LogingActivity extends Activity {
     }
 
     private void link_getmima(int id) {
+        Log.d("LogingActivity", "面膜点点滴滴的的 ");
         // showDialog();
         final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
@@ -405,21 +428,24 @@ public class LogingActivity extends Activity {
                 try {
                     ResponseBody body = response.body();
                     String ss = body.string().trim();
-                    Log.d("DengJiActivity", ss+"[]");
+                    Log.d("LogingActivity", ss+"密码");
 
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                     Gson gson = new Gson();
-                    MiMaBean zhaoPianBean = gson.fromJson(jsonObject, MiMaBean.class);
+                    final MiMaBean zhaoPianBean = gson.fromJson(jsonObject, MiMaBean.class);
                     if (zhaoPianBean.getError_code()==0){
-                        link_save(zhaoPianBean.getData().getUsername(),zhaoPianBean.getData().getPassword());
-
-                        timer.cancel();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                link_save(zhaoPianBean.getData().getUsername(),zhaoPianBean.getData().getPassword());
+                            }
+                        });
 
                     }
 
                 } catch (Exception e) {
 
-                    Log.d("WebsocketPushMsg", e.getMessage());
+                    Log.d("DengJiActivity", e.getMessage()+"密码");
                 }
             }
         });
@@ -442,13 +468,21 @@ public class LogingActivity extends Activity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
 
-        Request.Builder requestBuilder = new Request.Builder()
-                .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
-                .post(body)
-               // .get()
-                .url(dengLuBean.getZhuji() + "/api/terminals/updatestatus");
+
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+        Request.Builder requestBuilder=null;
+        try {
+             requestBuilder = new Request.Builder()
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    .post(body)
+                    // .get()
+                    .url(dengLuBean.getZhuji() + "/api/terminals/updatestatus");
+        }catch (Exception e){
+            Log.d("LogingActivity", e.getMessage()+" ");
+            return;
+        }
+
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
@@ -469,7 +503,7 @@ public class LogingActivity extends Activity {
                 try {
                     ResponseBody body = response.body();
                     String ss = body.string().trim();
-                    Log.d("DengJiActivity", ss+"[]");
+                    Log.d("DengJiActivity", ss+"[][][]");
 
 //                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
 //                    Gson gson = new Gson();
@@ -488,6 +522,7 @@ public class LogingActivity extends Activity {
         });
 
     }
+
 
 
     private final static String HEX = "0123456789ABCDEF";

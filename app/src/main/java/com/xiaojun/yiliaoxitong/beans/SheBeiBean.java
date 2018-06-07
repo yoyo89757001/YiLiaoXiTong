@@ -105,4 +105,13 @@ public class SheBeiBean {
             this.create_time = create_time;
         }
     }
+
+    @Override
+    public String toString() {
+        return "SheBeiBean{" +
+                "data=" + data +
+                ", error_code=" + error_code +
+                ", error_msg='" + error_msg + '\'' +
+                '}';
+    }
 }

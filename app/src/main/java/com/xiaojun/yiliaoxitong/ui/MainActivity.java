@@ -10,7 +10,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,7 +40,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
 import com.bumptech.glide.Glide;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
@@ -61,6 +59,7 @@ import com.xiaojun.yiliaoxitong.beans.DengLuBean;
 import com.xiaojun.yiliaoxitong.beans.DengLuBeanDao;
 import com.xiaojun.yiliaoxitong.beans.GeRenXinXi;
 import com.xiaojun.yiliaoxitong.beans.LiangBiaoBean;
+import com.xiaojun.yiliaoxitong.beans.SheBeiBean;
 import com.xiaojun.yiliaoxitong.beans.YiShengBeans;
 import com.xiaojun.yiliaoxitong.beans.YiShengInFoBean;
 import com.xiaojun.yiliaoxitong.utils.DateUtils;
@@ -74,7 +73,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -84,6 +82,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -141,16 +140,31 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private final Timer timer = new Timer();
     private TimerTask task;
     private int dl=11;
+    private BatteryReceiver  receiver=null;
 
 
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             // 要做的事情
-            if (dl<10){
-                link_zhuangtai(2);
-            }else {
-                link_zhuangtai(1);
+
+            if (msg.what==1){
+                if (dl<10){
+                    link_zhuangtai(2);
+                }else {
+                    link_zhuangtai(1);
+                }
+                link_gengxinSB(Utils.getUniqueId(MainActivity.this));
+            }else if (msg.what==2){
+                if (!isDestroyed() && !isFinishing()){
+                    task.cancel();
+                    timer.cancel();
+                    wm.removeViewImmediate(view);
+                    finish();
+                    startActivity(new Intent(MainActivity.this,LogingActivity.class));
+
+                }
+
             }
 
             //  Log.d("LogingActivity", decode("abc123!@", "STB9dTF3+v58PC36NRrrBmaLc054WiqZ".getBytes())+"ggg");
@@ -158,6 +172,70 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
     };
 
+
+    private void link_gengxinSB(String serialnumber) {
+        // showDialog();
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        final OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+        //  Log.d("MainActivity", Utils.getUniqueId(MainActivity.this));
+//    /* form的分割线,自己定义 */
+        //  Log.d("LogingActivity", serialnumber);
+        Request.Builder requestBuilder=null;
+        try {
+            requestBuilder = new Request.Builder()
+                    .addHeader("Authorization", "Bearer " + dengLuBean.getToken())
+                    // .post(body)
+                    .get()
+                    .url(dengLuBean.getZhuji() + "/api/notify/"+serialnumber);
+        }catch (Exception e){
+            Log.d("LogingActivity", e.getMessage()+"k");
+            return;
+
+        }
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                //dismissDialog();
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //  dismissDialog();
+                //   Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+                    ResponseBody body = response.body();
+                    String ss = body.string().trim();
+                    Log.d("DengJiActivity", ss+"Main绑定");
+
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    SheBeiBean zhaoPianBean = gson.fromJson(jsonObject, SheBeiBean.class);
+                    if (zhaoPianBean.getError_code()==0){
+                        if (zhaoPianBean.getData().getAction().equals("解绑")) {
+
+                            Message message2 = new Message();
+                            message2.what = 2;
+                            handler.sendMessage(message2);
+                        }
+
+
+                    }
+
+                } catch (Exception e) {
+
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
+
+    }
 
     /**
      * 监听获取手机系统剩余电量
@@ -171,6 +249,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             int total = intent.getExtras().getInt("scale");// 获得总电量
             int percent = current * 100 / total;
             dl=percent;
+
             Log.d("BatteryReceiver", "percent:" + percent);
 
         }
@@ -193,7 +272,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //设置横屏
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
         }
 
         wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
@@ -203,7 +282,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         view = mInflater.inflate(R.layout.activity_main, null);
         wmParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
         wmParams.format = PixelFormat.OPAQUE;
-        wmParams.screenOrientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        wmParams.screenOrientation=ActivityInfo.SCREEN_ORIENTATION_USER;
         wmParams.flags = WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                 | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR;
         ;
@@ -211,7 +290,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         wmParams.height = dh;
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        BatteryReceiver  receiver = new BatteryReceiver();
+          receiver = new BatteryReceiver();
         registerReceiver(receiver, filter);
 
         webView= (WebView) view.findViewById(R.id.web);
@@ -516,7 +595,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
         lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+              //  Log.d("MainActivity", "dataList.get(position).getStatus():" + dataList.get(position).getStatus());
                 if (dataList.get(position).getStatus()==0)
+
+                   // Log.d("DengJiActivity", "点击了");
+
                 link_liangbiao_url(dataList.get(position).getGuage_id());
 
             }
@@ -593,6 +676,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         link_info();
         link_ys_list(1, 500, null);
+
 
         task = new TimerTask() {
             @Override
@@ -680,9 +764,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 ll3.setVisibility(View.VISIBLE);
                 break;
             case R.id.a5:
-                startActivity(new Intent(MainActivity.this,LogingActivity.class));
+                wm.removeViewImmediate(view);
                 finish();
-
+                startActivity(new Intent(MainActivity.this,LogingActivity.class));
                 break;
             case R.id.a6:
                 tanchuang1.setVisibility(View.GONE);
@@ -857,7 +941,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         if (!MainActivity.this .isFinishing() && popupWindow.isShowing())
                         {
                             popupWindow.dismiss();
-
                         }
                     }
                 });
@@ -868,6 +951,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 popupWindow.setTouchable(true);//能够响应触摸事件
                 popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
                 popupWindow.showAsDropDown(fenchuangnianling, 0, 0);
+
                 break;
             case R.id.fuqingxueli:
                 View contentView9 = LayoutInflater.from(MainActivity.this).inflate(R.layout.xiangmu_po_item, null);
@@ -1146,7 +1230,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
 
 
-
     private String getData() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             StringBuilder str = new StringBuilder().append(datePicker.getYear()).append("-")
@@ -1221,6 +1304,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
         im44.setBackgroundResource(R.drawable.defenbaogao2);
         im55.setBackgroundResource(R.drawable.xiugaimima2);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (receiver!=null)
+            unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     public int setListViewHeightBasedOnChildren(ListView listView) {
@@ -1581,6 +1671,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                         .get()
                         .url(dengLuBean.getZhuji() + "/api/guages/join?" + "PageIndex=" + pageIndex + "&" + "PageSize=" + pageSize + "&UserId=" + id + "&GuageName=" + name);
             }
+
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
         //step 4: 开始异步请求
@@ -1621,7 +1712,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                                 if (dataList.size()>0){
                                     dataList.clear();
                                 }
-                                dataList.addAll(zhaoPianBean.getData().getGuages().getRows()!=null?zhaoPianBean.getData().getGuages().getRows():new ArrayList<LiangBiaoBean.DataBean.GuagesBean.RowsBean>());
+                                dataList.addAll((zhaoPianBean.getData()!=null && zhaoPianBean.getData().getGuages()!=null) ?zhaoPianBean.getData().getGuages().getRows():new ArrayList<LiangBiaoBean.DataBean.GuagesBean.RowsBean>());
 
                                 lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
                                 taiZhangAdapter.notifyDataSetChanged();
@@ -1630,9 +1721,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             }
                         });
 
-
                 }else {
-
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -1742,7 +1831,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     ResponseBody body = response.body();
                     String ss = body.string().trim();
                     Log.d("DengJiActivity", ss);
-
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                     Gson gson = new Gson();
                     final DeFenBean zhaoPianBean = gson.fromJson(jsonObject, DeFenBean.class);
@@ -1840,7 +1928,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                Log.d("DengJiActivity", "请求识别失败" + e.getMessage()+"   URL");
                 //dismissDialog();
 
                 runOnUiThread(new Runnable() {
@@ -1852,7 +1940,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //  dismissDialog();
-                Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                Log.d("DengJiActivity", "请求识别成功"+call.request().toString());
                 //获得返回体
                 try {
                     ResponseBody body = response.body();
